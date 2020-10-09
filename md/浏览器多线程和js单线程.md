@@ -35,5 +35,5 @@
 
 ## 参考文档
 
-[浏览器的多线程](https://www.cnblogs.com/gg-qq/p/11125652.html)
-[web worker的用法及应用场景](https://blog.csdn.net/lqlqlq007/article/details/79824122)
++ [浏览器的多线程](https://www.cnblogs.com/gg-qq/p/11125652.html)
++ [web worker的用法及应用场景](https://blog.csdn.net/lqlqlq007/article/details/79824122)

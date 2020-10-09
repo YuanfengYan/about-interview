@@ -331,9 +331,9 @@ const app = new Vue({
 
 ### 八、Vuex 状态管理
 
-[Vuex官网介绍](https://vuex.vuejs.org/zh/)
-[手写Vuex核心原理，再也不怕面试官问我Vuex原理](https://juejin.im/post/6855474001838342151)
++ [Vuex官网介绍](https://vuex.vuejs.org/zh/)
++ [手写Vuex核心原理，再也不怕面试官问我Vuex原理](https://juejin.im/post/6855474001838342151)
 
 ## 参考文档
 
-[Vue 组件通信方式全面详解](https://juejin.im/post/6844903784963899405)
++ [Vue 组件通信方式全面详解](https://juejin.im/post/6844903784963899405)
