@@ -25,9 +25,9 @@
 7. afterEmit：文件已经写入磁盘完成
 8. done：完成编译
 
-## 插件Plugins
+### 插件Plugins
 
-### 基本结构
+#### 基本结构
 
 >plugins是可以用自身原型方法apply来实例化的对象apply只在安装插件被Webpack compiler执行一次。apply方法传入一个webpck compiler的引用，来访问编译器回调。
 
@@ -37,7 +37,7 @@
 4. 操作webpack内部实例特定数据。
 5. 功能完成后，调用webpack提供的回调。
 
-### 工作原理
+#### 工作原理
 
 1. 读取配置的过程中会先执行 new HelloPlugin(options) 初始化一个 HelloPlugin 获得其实例。
 2. 初始化 compiler 对象后调用 HelloPlugin.apply(compiler) 给插件实例传入 compiler 对象。
@@ -148,6 +148,35 @@ resolve:{
   }
 }
 ```
+
+## 四、webpack3和webpack4区别
+
+1. mode
+
+    webpack增加了一个mode配置，只有两种值development | production。对不同的环境他会启用不同的配置。
+
+2. CommonsChunkPlugin
+
+  CommonChunksPlugin已经从webpack4中移除。
+  可使用optimization.splitChunks进行模块划分（提取公用代码）。
+  但是需要注意一个问题，默认配置只会对异步请求的模块进行提取拆分，如果要对entry进行拆分
+  需要设置optimization.splitChunks.chunks = 'all'。
+
+3. webpack4使用MiniCssExtractPlugin取代ExtractTextWebpackPlugin。
+
+4. 代码分割。
+
+  使用动态import，而不是用system.import或者require.ensure
+
+5. vue-loader。
+
+  使用vue-loader插件为.vue文件中的各部分使用相对应的loader，比如css-loader等
+
+6. UglifyJsPlugin
+
+  现在也不需要使用这个plugin了，只需要使用optimization.minimize为true就行，production mode下面自动为true
+
+  optimization.minimizer可以配置你自己的压缩程序
 
 ## 参考文档
 
