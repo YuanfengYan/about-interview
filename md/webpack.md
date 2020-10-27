@@ -149,6 +149,15 @@ resolve:{
 }
 ```
 
+3. Tree-Shaking
+
+  Tree-shaking的本质是消除无用的js代码：在 webpack 项目中，当我们在入口文件中引入一个模块的时候，可能不会引入这个模块的所有代码，只引入了我们需要的代码，那么在使用webpack进行打包时，tree-shaking会自动帮我们把不用的代码过滤掉。
+
+  提升项目性能：JS绝大多数情况需要通过网络进行加载，然后执行，加载的文件越小，整体执行时间更短，所以去除无用代码以减少文件体积, 从而提升项目性能。
+
+>生产环境自动配好了，开发环境需要配置
+
+
 ## 四、webpack3和webpack4区别
 
 1. mode
@@ -177,6 +186,7 @@ resolve:{
   现在也不需要使用这个plugin了，只需要使用optimization.minimize为true就行，production mode下面自动为true
 
   optimization.minimizer可以配置你自己的压缩程序
+
 
 ## 参考文档
 
