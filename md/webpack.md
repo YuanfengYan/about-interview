@@ -157,7 +157,6 @@ resolve:{
 
 >生产环境自动配好了，开发环境需要配置
 
-
 ## 四、webpack3和webpack4区别
 
 1. mode
@@ -170,6 +169,9 @@ resolve:{
   可使用optimization.splitChunks进行模块划分（提取公用代码）。
   但是需要注意一个问题，默认配置只会对异步请求的模块进行提取拆分，如果要对entry进行拆分
   需要设置optimization.splitChunks.chunks = 'all'。
+  SplitChunksPlugin的好，好在解决了入口文件过大的问题还能有效自动化的解决懒加载模块之间的代码重复问题
+
+  [两者比较](https://www.cnblogs.com/zhanyishu/p/9349576.html)
 
 3. webpack4使用MiniCssExtractPlugin取代ExtractTextWebpackPlugin。
 
@@ -190,5 +192,6 @@ resolve:{
 
 ## 参考文档
 
-[揭秘webpack插件工作流程和原理](https://juejin.im/post/6844904161515929614)
-[揭秘webpack plugin](https://www.cnblogs.com/etoumao/p/13496636.html)
++ [揭秘webpack插件工作流程和原理](https://juejin.im/post/6844904161515929614)
++ [揭秘webpack plugin](https://www.cnblogs.com/etoumao/p/13496636.html)
++ [关于webpack的面试题](https://www.cnblogs.com/gaoht/p/11310365.html)

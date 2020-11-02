@@ -181,3 +181,4 @@ v-for加key是为了添加唯一标识，让Diff算法可以正确识别节点�
 ## 参考文档
 
 [解析vue2.0的diff算法](https://segmentfault.com/a/1190000008782928)
+[深入 Vue2.x 的虚拟 DOM diff 原理](https://cloud.tencent.com/developer/article/1006029)
