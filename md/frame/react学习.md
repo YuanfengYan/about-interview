@@ -819,3 +819,175 @@ useCallback(fn, deps) 相当于 useMemo(() => fn, deps)。
     useDebugValue 可用于在 React 开发者工具中显示自定义 hook 的标签。
 
 - 延迟格式化 debug 值
+
+## Redux 
+
+### 设计思想
+
+- 1、Web 应用是一个状态机，视图与状态是一一对应的。  
+- 2、所有的状态，保存在一个对象里面。  
+
+### 基本概念和 API
+
+    参考链接：  [Redux 入门教程（一）：基本用法](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
+
+- Store
+
+    - Store 就是保存数据的地方，你可以把它看成一个容器。整个应用只能有一个 Store。
+    - Redux 提供createStore这个函数，用来生成 Store。
+
+        ```javascript
+        import { createStore } from 'redux';
+        const store = createStore(fn);
+        ```
+
+- State
+
+    - Store对象包含所有数据
+    - store.getState()获取当前时刻的State
+
+    ```javascript
+    import { createStore } from 'redux';
+    const store = createStore(fn);
+
+    const state = store.getState();
+    ```
+
+- Action
+
+    - Action 是一个对象。其中的type属性是必须的，表示 Action 的名称。
+    - Action 描述当前发生的事情。改变 State 的唯一办法，就是使用 Action。它会运送数据到 Store。
+
+    ```javascript
+    const action = {
+        type: 'ADD_TODO',
+        payload: 'Learn Redux'
+    };
+    ```
+
+- Action Creator
+
+    - 一个生成Action的一个函数方法（原因：View 要发送多少种消息，就会有多少种 Action。如果都手写，会很麻烦）
+
+    ```javascript
+    const ADD_TODO = '添加 TODO';
+
+    function addTodo(text) {
+        return {
+            type: ADD_TODO,
+            text
+        }
+    }
+    const action = addTodo('Learn Redux');
+    //addTodo函数就是一个 Action Creator
+    ```
+
+- store.dispatch()
+
+    - store.dispatch()是 View 发出 Action 的唯一方法。
+    - store.dispatch接受一个 Action 对象作为参数，将它发送出去
+
+    ```javascript
+    import { createStore } from 'redux';
+    const store = createStore(fn);
+    store.dispatch({
+        type: 'ADD_TODO',
+        payload: 'Learn Redux'
+    });
+    //结合 Action Creator，这段代码可以改写如下。
+    store.dispatch(addTodo('Learn Redux'));
+    ```
+
+- Reducer
+
+    - 概念：Store 收到 Action 以后，必须给出一个新的 State，这样 View 才会发生变化。这种 State 的计算过程就叫做 Reducer。
+    - Reducer 是一个函数，它接受 Action 和当前 State 作为参数，返回一个新的 State。
+
+    ```javascript
+    const reducer = function (state, action) {
+        // ...
+        return new_state;
+    };
+
+    const defaultState = 0;
+    const reducer = (state = defaultState, action) => {
+    switch (action.type) {
+        case 'ADD':
+        return state + action.payload;
+        default: 
+        return state;
+    }
+    };
+
+    const state = reducer(1, {
+        type: 'ADD',
+        payload: 2
+    });
+    ```
+
+    - Reducer 函数最重要的特征是，它是一个纯函数
+
+    ```
+     纯函数概念：
+        1、不得改写参数
+        2、不能调用系统 I/O 的API
+        3、不能调用Date.now()或者Math.random()等不纯的方法，因为每次会得到不一样的结果
+    ```
+
+        由于 Reducer 是纯函数，就可以保证同样的State，必定得到同样的 View。但也正因为这一点，Reducer 函数里面不能改变 State，必须返回一个全新的对象，请参考下面的写法。
+
+    ```javascript
+        // State 是一个对象
+        function reducer(state, action) {
+            return Object.assign({}, state, { thingToChange });
+            // 或者
+            return { ...state, ...newState };
+        }
+
+        // State 是一个数组
+        function reducer(state, action) {
+            return [...state, newItem];
+        }
+    ```
+
+- store.subscribe()
+
+    - Store 允许使用store.subscribe方法设置监听函数，一旦 State 发生变化，就自动执行这个函数。
+
+    ```javascript
+    import { createStore } from 'redux';
+    const store = createStore(reducer);
+
+    store.subscribe(listener);
+    ```
+
+    - store.subscribe方法返回一个函数，调用这个函数就可以解除监听
+
+    ```javascript
+    let unsubscribe = store.subscribe(() =>
+        console.log(store.getState())
+    );
+
+    unsubscribe();
+    ```
+
+### Store 的实现
+
+- 提供了三个方法
+
+    ```javascript
+        store.getState()
+        store.dispatch()
+        store.subscribe()
+    ```
+
+    ```javascript
+        import { createStore } from 'redux';
+        let { subscribe, dispatch, getState } = createStore(reducer);
+    ```
+
+- createStore方法还可以接受第二个参数，表示 State 的最初状态。这通常是服务器给出的。
+
+    ```javascript
+    let store = createStore(todoApp, window.STATE_FROM_SERVER)
+    ```
