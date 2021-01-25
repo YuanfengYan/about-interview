@@ -14,6 +14,13 @@
 
 * 静态模块处理器=>递归构建关系依赖图
 
+### 3、常用模块/配置
+
+* source map(devtool: 'inline-source-map'),：代码出错警告 能够将编译后的代码映射回原始源代码 用于测试环境
+* html-webpack-plugin : 打包html压缩
+* clean-webpack-plugin： 清理历史打包数据
+* webpack-dev-server: 实时重新加载
+
 ## 二、webpack构建流程
 
 1. 校验配置文件：读取命令行传入或者webpack.config.js文件，<b>初始化本次构建的配置参数</b>
@@ -85,11 +92,30 @@ module.exports = HelloPlugin;
     >页面中引入CDN外链
     >在webpack.config.js中加入external配置项，(让里面的库不被webapck打包，也不影响通过import（或者其他AMD、CMD等）方式引入)
     >output中配置output:{libraryTarget:"umd"} (libraryTarget可告知我们构建出来的业务模块，当读到了externals中的key时，需要以umd的方式去获取资源名，否则会有出现找不到module的情况)
-2. 提取vendor (减小js的体积)
-    >CommonsChunkPlugin()抽离公共的代码 (Vue cli构建的项目中默认所有在node_modules中的模块打包进vendor)
+2. 防止重复 提取vendor (减小js的体积) 并且 设置文件名hash不因为文件未改动而变化，命中缓存
+    >CommonsChunkPlugin()抽离公共的代码 (Vue cli构建的项目中默认所有在node_modules中的模块打包进vendor)  
+        entry中配置要进行公共提取的文件
+        vendor: ['lodash']
+        new webpack.HashedModuleIdsPlugin(),//保证项目构建时vendor.js的hash值在module文件未变化时不进行改变
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor'
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'manifest'
+        })
+
     >HashedModuleIdsPlugin()保证项目构建时vendor.js的hash值在module文件未变化时不进行改变
 3. 开启gizp压缩
-    >compression-webpack-plugin插件  
+    >compression-webpack-plugin插件 
+    >webpack4开始只需要配置mode 为 "production"进行uglifyjs 压缩插件。
+4. 动态导入
+    >output 中配置 chunkFilename: '[name].bundle.js'
+    第一种，也是优先选择的方式是，使用符合 ECMAScript 提案 的 import() 语法。
+    第二种，则是使用 webpack 特定的 require.ensure
+5. 配置tree shaking
+   >package.json中配置  "sideEffects": false
+   来告知 webpack，它可以安全地删除未用到的 export 导出。
+   或者指定某些文件可以无副作用进行tree shaking
 
 ### 提升打包速度
 
@@ -188,6 +214,7 @@ resolve:{
   现在也不需要使用这个plugin了，只需要使用optimization.minimize为true就行，production mode下面自动为true
 
   optimization.minimizer可以配置你自己的压缩程序
+
 
 
 ## 参考文档
