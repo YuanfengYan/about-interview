@@ -22,7 +22,7 @@
 1. declarations:属于该模块的可声明对象的列表：（组件、指令、管道）
 2. providers：依赖注入提供者的列表
 3. imports： 被导入的模块中导出的那些软件资产同样会被声明在这里
-4. exports：该模块的可声明对象的列表区别于1 供其他导入它的模块使用
+4. exports：该模块的可声明对象的列表区别于1 供其他导入它的模块使用 （声明（ declaration ）的子集，可用于其它模块中的组件模板 ）
 5. bootstrap：自启动组件列表（通常只用一个就是根组件）
 6. entryComponents：可以动态载入视图的组件列表
 
@@ -103,3 +103,15 @@
 2. 子组件 =》父组件  @Output() event :EventEmitter<any>=new EventEmitter()  =>this.event.emit(val)
 3. 本地变量引用#var
 4. @ViewChild
+
+## 安装环境
+
+### 删除当前环境
+
+    cnpm uninstall -g @angular/cli //卸载之前的版本
+    cnpm cache clean --force //清理缓存，确保卸载干净
+    ng v //若显示类似command not found的信息，则说明卸载完成
+
+### 安装指定版本
+
+    cnpm install -g @angular/cli@8.0.3 //指定安装版本
