@@ -265,6 +265,34 @@ name=xxx
 
 ```
 
+
+## 六 实用的webpack方法
+
+### require.context
+
+require.context(directory, useSubdirectories, regExp)
+
+  directory: 要查找的文件路径
+  useSubdirectories: 是否查找子目录
+  regExp: 要匹配文件的正则
+
+示例：file = require.context('./components/', true, /\.js$/)
+
+返回的是一个方法，有两个静态方法 keys,resolve, 一个静态属性 id
+
+方法返回的是我们需要的模块/ file('即匹配的文件名的相对路径') 参数同resolve
+
+1、keys: 返回匹配成功模块的名字组成的数组
+
+2、resolve: 接受一个参数request，request为test文件夹下面匹配文件的相对路径，返回这个匹配文件相对于整个工程的相对路径
+
+3、id: 执行环境的id，返回的是一个字符串，主要用在module.hot.accept，应该是热加载
+
+应用场景：
+
+      实现自动化导入模块,在前端工程中,如果遇到从一个文件夹引入很多模块的情况,可以使用这个api,它会遍历文件夹中的指定文件,然后自动导入,使得不需要每次显式的调用import导入模块
+
+
 ## 参考文档
 
 + [揭秘webpack插件工作流程和原理](https://juejin.im/post/6844904161515929614)

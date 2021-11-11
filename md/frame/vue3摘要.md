@@ -51,3 +51,28 @@ function render(){
     vue3在对比的时候可以标记那些是动态节点，然后把这些动态节点放到根节点中，用一个数组记录这些动态节点，然后循环数组重新渲染这些，
     
 5、PatchFlag
+
+...
+
+
+##  三、 Vue3新特性
+
++  组合式api
+
++  Teleport 挂载到对应的UI DOM节点,并保持创建初期Teleport所作为的逻辑子组件
+
++ 片段 （鸡肋）
+
++ 语法糖 单文件组件<script setup>
+
+    非兼容变更
+
++ v-model 替代 原先的v-model.sync(v-bind.sync) <==> <input :modelValue="t" @update:modelValue = 't= $event' > 
+
++ key <template v-for> 的 key 应该设置在 <template> 标签上 (而不是设置在它的子节点上)。 
+
++ 2.x 版本中在一个元素上同时使用 v-if 和 v-for 时，v-for 会优先作用  /  3.x 版本中 v-if 总是优先于 v-for 生效。
+
++ v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果
+
+
