@@ -75,4 +75,26 @@ function render(){
 
 + v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果
 
+## 四、 为啥要有组合式api，有啥优点，区别于mixins...等
 
+### 1、使用组合式api原因 及优点
+
++ 代码复用代码的抽离到单独的js
+
++ 能把逻辑关注点，集中到一个文件中进行抽离
+
++ 抽离代码的同时，代码不碎片化，可以将变量，函数集中在一起，减少分离掩盖的潜在逻辑问题
+
+### 2、使用组合式api区别于mixins
+
+- mixins其实只是option API(选项式API)混入，容易导致命名冲突覆盖，vs 组合API不用担心命名冲突
+
+- mixin所有的选项都会被暴露 vs 组合API可以选择性的暴露方法，变量
+
+### 3、主要事项
+
++ 执行setup函数的时候，还没有执行beforeCreate生命周期方法，所以无法使用data,methods，所以this指向的是undefined
+
++ setup函数只能是同步的，不能是异步的
+
++ 可以和option API(选项式API)混用，因为Compositon API（组合式API）本质只是注入API
