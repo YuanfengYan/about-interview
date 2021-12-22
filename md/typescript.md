@@ -226,6 +226,103 @@ class Location {
 }
 ```
 
+## 三、 类
+
+### 继承
+
+### 公共，私有与受保护的修饰符
+
+### 默认public
+
+### 私有private
+
+  当成员被标记成 private时，它就不能在声明它的类的外部访问
+  如果其中一个类型里包含一个 private成员，那么只有当另外一个类型中也存在这样一个 private成员， 并且它们都是来自同一处声明时，我们才认为这两个类型是兼容 (该规则同样适用于protected)
+### 受保护 protected
+
+  protected修饰符与 private修饰符的行为很相似，但有一点不同， protected成员在派生类中仍然可以访问
+
+### 只读的 readonly
+
+  只读属性必须在声明时或构造函数里被初始化。
+
+### 存取器get和set
+
+  修饰 get和 set来截取对对象成员的访问
+
+### 静态属性 static
+
+### 抽象类 abstract [参考](https://www.cnblogs.com/yaphetsfang/articles/13468126.html)
+
+  应用场景： 描述一类事物的时候，发现该事物确实存在着某种行为，但是目前该行为是不具体的
+  
+## 四、 函数 ...
+
+## 五、泛型
+
+```typescript
+function identity<T>(arg: T): T {
+    return arg;
+}
+```
+
+### 泛型类型
+
+```typescript
+interface GenericIdentityFn {
+    <T>(arg: T): T;
+}
+
+function identity<T>(arg: T): T {
+    return arg;
+}
+
+let myIdentity: GenericIdentityFn = identity;
+```
+
+### 泛型类
+
+  泛型类看上去与泛型接口差不多。 泛型类使用（ <>）括起泛型类型，跟在类名后面。
+
+```typescript
+class GenericNumber<T> {
+    zeroValue: T;
+    add: (x: T, y: T) => T;
+}
+
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function(x, y) { return x + y; };
+```
+
+### 泛型约束
+
+```typescript
+// 约束了loggingIdentity的T泛型，必须要是含有length为number 的属性
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+    console.log(arg.length);  // Now we know it has a .length property, so no more error
+    return arg;
+}
+```
+
+### 在泛型约束中使用类型参数
+
+```typescript
+// 通过声明obj:T，key:K
+// 你可以声明一个类型参数，且它被另一个类型参数所约束。 比如，现在我们想要用属性名从对象里获取这个属性。 并且我们想要确保这个属性存在于对象 obj上，因此我们需要在这两个类型之间使用约束。
+function getProperty(obj: T, key: K) {
+    return obj[key];
+}
+
+let x = { a: 1, b: 2, c: 3, d: 4 };
+
+getProperty(x, "a"); // okay
+getProperty(x, "m"); // error: Argument of type 'm' isn't assignable to 'a' | 'b' | 'c' | 'd'.
+```
 ## 参考文档
 
 [typescript](https://www.tslang.cn/docs)
