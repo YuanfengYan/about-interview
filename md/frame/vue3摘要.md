@@ -98,3 +98,5 @@ function render(){
 + setup函数只能是同步的，不能是异步的
 
 + 可以和option API(选项式API)混用，因为Compositon API（组合式API）本质只是注入API
+
++ Vue3中清空Reactive定义的数组 必须通过arr.length = 0的方式清空数组或者arr.splice(0, arr.length)，不能直接让它等于[]或重新声明
