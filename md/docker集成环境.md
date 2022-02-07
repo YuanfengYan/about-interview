@@ -2,6 +2,8 @@
 
     初步理解：docker就是一个虚拟机可以执行一些镜像实例化，比如nginx，php等环境。比起虚拟机docker更加轻量快速##
 
+    介绍参考链接 [Docker和k8s的区别与介绍](https://www.cnblogs.com/misswangxing/p/10669444.html)
+
 ## 示例
 
 多个项目统一的目录  ~/workspace
