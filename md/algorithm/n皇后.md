@@ -9,9 +9,20 @@
 
     };
 
-## 方案- 
+n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击(任何2个皇后不放在同一行或同一列或同一斜线上。)
+
+
+
+### 方案- 
 
 + 回溯法思路
+
+  运用回溯法解题的三个关键
+  （1）针对给定的问题，定义问题的解空间
+
+  （2） 确定易于搜索的解空间结构
+
+  （3）以深度优先方式搜索解空间，并且在搜索过程中用剪枝函数避免无效检索。
 
 ```javascript
    var solveNQueens = function(n) {
@@ -64,3 +75,84 @@ function isValid(tmp, j) {
   return true
 }
 ```
+
+回溯模板：
+
+```javascript
+void BackTrace(int t){
+   if(t>n){
+      Output(x)
+   }
+   else{
+      for(int i=f(n,t);i<=g(n,t);i++){
+          x[t] = h(i);
+
+           if(Constraint(t)&&Bound(t)){
+                 BackTrace(t+1);
+           }
+      }
+
+  }
+}
+  // t 表示递归深度，即当前扩展结点在解空间树中的深度；
+
+  // n 用来控制递归深度，即解空间树的高度。
+
+  // 当 t>n时，算法已搜索到一个叶子结点，此时由函数Output(x)对得到的可行解x进行记录或输出处理。
+
+  // 用 f(n, t)和 g(n, t)分别表示在当前扩展结点处未搜索过的子树的起始编号和终止编号；
+
+  // h(i)表示在当前扩展结点处x[t] 的第i个可选值；
+
+  // 函数 Constraint(t)和 Bound(t)分别表示当前扩展结点处的约束函数和限界函数。
+
+  // 若函数 Constraint(t)的返回值为真，则表示当前扩展结点处x[1:t] 的取值满足问题的约束条件；否则不满足问题的约束条件。若函数Bound(t)的返回值为真，则表示在当前扩展结点处x[1:t] 的取值尚未使目标函数越界，还需由BackTrace(t+1)对其相应的子树做进一步地搜索；否则，在当前扩展结点处x[1:t]的取值已使目标函数越界，可剪去相应的子树。
+```
+
+## 背包问题
+
+```javascript
+// 求n个物品，重量，价值分别是wArr[i],vArr[i],放入容量为b的书包，最优解集
+let wArr = [1,5,3,6] ,vArr= [2,3,4,5] ,b = 9
+let list = []
+let num = 0 //进行查看是否重复计算大
+let valueMax = 0
+function fn(i,w,v,res) {
+    num++
+    console.log(num)
+    if(i==4||w ==b){ //w >= b进行枝剪
+        if(w <= b&&valueMax <= v){
+            if(valueMax == v){
+                
+                let resCopy = res.concat([])
+                list.push(resCopy)
+            }else{
+                let resCopy = res.concat([])
+                list=[resCopy]
+            }
+            valueMax = v
+        }
+       
+        return
+    } else{
+        
+        w = w+wArr[i]
+        v = v+vArr[i]
+        res.push(i)
+        fn(i+1,w,v,res)
+        w = w - wArr[i]
+        v = v - vArr[i]
+        res.pop()
+        fn(i+1,w,v,res)
+    }
+    
+}
+let res = []
+fn(0,0,0,res)
+console.log('list',list)
+```
+
+## 参考链接
+
++ [n皇后问题_回溯法](https://www.cnblogs.com/henuliulei/p/10117304.html)
++ [回溯法-背包问题](https://www.cnblogs.com/zhishiyv/p/14116205.html)

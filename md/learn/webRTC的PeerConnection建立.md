@@ -2,7 +2,7 @@
 
 WebRTC Peerconnection通信过程中的四种角色：
 
-+ Signaling Server
++ Signaling Server (信令服务)
 + ICE/TURN/STUN Server
 + Remote Peer
 + Local Peer
@@ -18,7 +18,17 @@ WebRTC Peerconnection通信过程中的四种角色：
 7. ClientA通过Signling Server发送自己的Candidate给ClientB，ClientB依据同样的逻辑把自己的Candidate通过Signaling Server中转发给ClientA；
 8. 至此ClientA和ClientB均已经接收到对方的Candidate，通过PeerConnection建立连接。至此P2P通道建立。
 
+<b>什么是信令服务：</b>
+
+1. 信令：信令就是协调通讯的过程,为了建立一个webrtc的通讯过程，,如协调一个客户端找到另一个客户端以及通知另一个客户端开始通讯
+2. 需要处理NAT或防火墙,这是公网上通讯首要处理的问题.
+
+<b>WebRTC和WebSocket的区别</b>
+
+- WebRTC ：两个浏览器之间的全双工通信。
+- WebSocket： 浏览器和Web服务器之间进行全双工通信.
 ## 参考文档
 
 + [webRTC API之RTCPeerConnection](https://segmentfault.com/a/1190000020273528?utm_source=tag-newest)
 + [WebRTC系列（3）：PeerConnection通信建立流程](https://www.jianshu.com/p/43957ee18f1a)
++ [WebRTC介绍及简单应用 ](https://www.cnblogs.com/vipzhou/p/7994927.html)
