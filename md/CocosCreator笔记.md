@@ -1,6 +1,6 @@
 # CocosCreator笔记
 
-## 基础知识
+## 一、基础知识
 
 ### three.js 、webGl、 openGl、 Cocos creator 比较
 
@@ -256,6 +256,9 @@ creator界面适配案例:
     4: 决定界面上的停靠点,借助cc.Widget组件来实现;  
     5: 相对于父亲的区域大小;  
 
+## 二、 搭建单场景项目框架
+
+### 1、
 ## 做的项目
 
 [弹弹球][https://github.com/YuanfengYan/cocos-bollgame]
