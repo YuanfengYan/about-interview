@@ -1,5 +1,6 @@
 # webpack
-
+ 
+  本文是基于webpack4版本
 ## 一、介绍
 
 ### 1、功能
@@ -20,6 +21,8 @@
 * html-webpack-plugin : 打包html压缩
 * clean-webpack-plugin： 清理历史打包数据
 * webpack-dev-server: 实时重新加载
+* mini-css-extract-plugin： 提取CSS
+* optimize-css-assets-webpack-plugin： 压缩css
 
 ## 二、webpack构建流程
 
@@ -34,6 +37,7 @@
 
 ### 插件Plugins
 
++ 比较清晰的plugin制作 [Webpack4.0各个击破（7）plugin篇](https://www.mk2048.com/blog/blog_hckc2bjiai1aa.html)
 #### 基本结构
 
 >plugins是可以用自身原型方法apply来实例化的对象apply只在安装插件被Webpack compiler执行一次。apply方法传入一个webpck compiler的引用，来访问编译器回调。
@@ -63,6 +67,13 @@ class HelloPlugin{
     compiler.hooks.emit.tap('HelloPlugin', (compilation) => {
       // 在功能流程完成后可以调用 webpack 提供的回调函数；
     });
+    // 监听compilation下的钩子
+     compiler.hooks.compilation.tap('HelloPlugin', (compilation) => {
+      compilation.hooks.buildModule.tap('HelloPlugin',(module)=>{
+        // ....
+      })
+    });
+    // compiler.plugin('hooks-name'，function(){}) //属于webpack3及以前的写法，因为没找到3的官方文档，而webpack4开始官网已经是 compiler.hooks.hooksname.tap('pluginname',function(){})这种写法
     // 如果事件是异步的，会带两个参数，第二个参数为回调函数，在插件处理完任务时需要调用回调函数通知webpack，才会进入下一个处理流程。
     compiler.plugin('emit',function(compilation, callback) {
       // 支持处理逻辑
@@ -74,6 +85,12 @@ class HelloPlugin{
 }
 
 module.exports = HelloPlugin;
+
+// 安装插件时, 只需要将它的一个实例放到Webpack config plugins 数组里面:
+const HelloPlugin = require('./hello-plugin.js')
+var webpackConfig = {
+  plugins: [new HelloPlugin({ options: true })],
+}
 
 ```
 
@@ -216,7 +233,6 @@ resolve:{
   optimization.minimizer可以配置你自己的压缩程序
 
 
-
 ## 五 其他
 
 ### 用.env.development设置环境变量
@@ -268,6 +284,11 @@ name=xxx
 
 ## 六 实用的webpack方法
 
+## 七 关于vue-cli搭建的项目如何修改webpack
+
++ [vue.config中configureWebpack 与 chainWebpack区别](https://www.jianshu.com/p/27d82d98a041)
++ [官方介绍webpack 相关](https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F)
+
 ### require.context
 
 require.context(directory, useSubdirectories, regExp)
@@ -298,3 +319,5 @@ require.context(directory, useSubdirectories, regExp)
 + [揭秘webpack插件工作流程和原理](https://juejin.im/post/6844904161515929614)
 + [揭秘webpack plugin](https://www.cnblogs.com/etoumao/p/13496636.html)
 + [关于webpack的面试题](https://www.cnblogs.com/gaoht/p/11310365.html)
++ [webpack5 和 webpack4 的区别有哪些 ](https://blog.csdn.net/weixin_48181168/article/details/120445028)
++ [webpack 源码解读(3)--CommonsChunkPlugin](https://zhuanlan.zhihu.com/p/33676967)
