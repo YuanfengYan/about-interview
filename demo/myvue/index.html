@@ -8,9 +8,26 @@
 </head>
 <body>
   <div id="root">
-    <input type="text" v-model="name">
+    <input type="text" onchange="handleChange(event)">
     <p>{{name}}</p>
   </div>
   <script src="./index2.js"></script>
+  <script>
+    vue = new SelfVue({
+      el:'#root',
+      data:{
+        name:123
+      }
+    })
+    window.vue = vue
+    setTimeout(function(){
+      console.log(vue)
+      vue.name=123445
+    },1000)
+    function handleChange(event){
+      console.log(event)
+      vue.name=event.target.value
+    }
+  </script>
 </body>
 </html>

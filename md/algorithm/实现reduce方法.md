@@ -17,6 +17,8 @@ callback接受4个参数
 
 initialValue:传递给函数的初始值，当initialValue有值时，将作为accumulator传入回调函数中。
 
+最终返回的是 accumulator
+
 ## 实现自己的reduce
 
 ```javascript

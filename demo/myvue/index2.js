@@ -19,7 +19,7 @@ function Watcher(vm, exp, cb){
   this.vm = vm
   this.cb = cb
   this.exp = exp
-  this.get()
+  this.get()//在new Watcher时主动执行一次
 }
 Watcher.prototype = {
   updata:function(){
@@ -32,7 +32,9 @@ Watcher.prototype = {
   get:function(){
     debugger
     Dep.target = this
-    var value = this.vm.data[this.exp]
+    //触发观察者中的get在new Watcher()时就触发了,将对应数据data[exp]的私有依赖Dep实例中推入 Dep.target,
+    // 而 Dep.target就是当前的this
+    var value = this.vm.data[this.exp] 
     Dep.target = null 
     return value
   }
@@ -110,12 +112,13 @@ Compile.prototype = {
     var childNodes = el.childNodes||[]
     var self = this
     childNodes.forEach(function(node){
-      // debugger
+      debugger
       console.log(node.textContent,node.nodeType)
       var reg = /\{\{(.*)\}\}/;
       if(node.nodeType==1){//元素节点
         
       }else if(node.nodeType == 3 && reg.test(node.textContent)){ //文本节点
+        // 正则是{{}}格式的，找到对应的data下的变量进行替换渲染
         self.compileText(node, reg.exec(node.textContent)[1])
        
       }
@@ -131,7 +134,10 @@ Compile.prototype = {
     // node.textContent = initText
     this.updateText(node,initText)
     debugger
+    // 
     new Watcher(this.vm, exp,function(value){
+      console.log(`对应的变量-${exp}变化:将触发更新`)
+      debugger
         self.updateText(node,value)
     })
   },
@@ -168,13 +174,13 @@ SelfVue.prototype = {
       });
   }
 }
-vue = new SelfVue({
-  el:'#root',
-  data:{
-    name:123
-  }
-})
-window.vue = vue
+// vue = new SelfVue({
+//   el:'#root',
+//   data:{
+//     name:123
+//   }
+// })
+// window.vue = vue
 // setTimeout(function(){
 //   console.log(vue)
 //   vue.name=123445
