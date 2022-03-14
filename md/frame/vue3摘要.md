@@ -1,6 +1,6 @@
 # Vue3摘要
 
-##  一、Vue3 里为什么要用 Proxy API 替代 defineProperty API
+##  一、Vue3 里为什么要用 Proxy API 替代 defineProperty API？
 
 defineProperty :
 
@@ -17,7 +17,7 @@ Proxy :
     4、Proxy可以直接监听数组的变化
 
 
-##  二. Vue3.0 编译做了哪些优化？效率提升?（底层，源码） 
+##  二. Vue3.0 编译做了哪些优化？效率提升?（底层，源码）？
 
 [Vue3 编译中的优化](https://www.jianshu.com/p/b87d532afeba)
 
@@ -54,31 +54,95 @@ function render(){
     vue2在对比新旧树的时候，并不知道那些节点是静态的，那些是动态的，因此只能一层一层比较，这就浪费了大部分事件在对比静态节点上
     vue3在对比的时候可以标记那些是动态节点，然后把这些动态节点放到根节点中，用一个数组记录这些动态节点，然后循环数组重新渲染这些，
     
-5、PatchFlag
+5、动态绑定标记 PatchFlag
+  
+  在编译阶段，分析模板并提取有用信息，最终体现在 vdom 树上。例如它能够清楚的知道：哪些节点是动态节点，以及为什么它是动态的(是绑定了动态的 class？还是绑定了动态的 style？亦或是其它动态的属性？)
+  总之编译器能够提取我们想要的信息，有了这些信息我们就可以在创建 vnode 的过程中为动态的节点打上标记：也就是传说中的 PatchFlags。
+
+  配合Block tree到靶向更新
 
 ...
 
-## 三、Vue3新特性
+## 三、Vue3新特性？
 
-+ 组合式api
++ **使用上**
 
-+ Teleport 挂载到对应的UI DOM节点,并保持创建初期Teleport所作为的逻辑子组件
+  + 组合式api
 
-+ 片段 （鸡肋）
+  + Teleport 挂载到对应的UI DOM节点,并保持创建初期Teleport所作为的逻辑子组件
+        ```html
+        <Teleport to="body">
+        需要传送到body下面的内容
+        </Teleport>
+        ```
 
-+ 语法糖 单文件组件 (script setup)
+  + 片段 （鸡肋）
 
-    非兼容变更
+  + 语法糖 单文件组件 (script setup)
 
-+ v-model 替代 原先的v-model.sync(v-bind.sync) <==> </input :modelValue="t" @update:modelValue = 't= $event' > 
+      非兼容变更
 
-+ key </template v-for> 的 key 应该设置在 </template> 标签上 (而不是设置在它的子节点上)。 
+  + v-model 替代 原先的v-model.sync(v-bind.sync) <==> </input :modelValue="t" @update:modelValue = 't= $event' > 
+    + 原先的v-model 等价于  </input :modelValue="t" @input:modelValue = 't= $event' > 
+    + 现在v-model等价于原先的v-model.sync等价于  </input :modelValue="t" @update:modelValue = 't= $event' >  
 
-+ 2.x 版本中在一个元素上同时使用 v-if 和 v-for 时，v-for 会优先作用  /  3.x 版本中 v-if 总是优先于 v-for 生效。
+  + key </template v-for> 的 key 应该设置在 </template> 标签上 (而不是设置在它的子节点上)。 
 
-+ v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果
+  + 2.x 版本中在一个元素上同时使用 v-if 和 v-for 时，v-for 会优先作用  /  3.x 版本中 v-if 总是优先于 v-for 生效。
 
-## 四、 为啥要有组合式api，有啥优点，区别于mixins...等
+  + v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果
+
+  + 新增context.emit，与this.$emit（vue3中只能在方法里使用）作用相同
+
+  + Vue3中的属性绑定
+  
+      + 默认所有属性都绑定到根元素
+      + 使用inheritAttrs: false可以取消默认绑定
+      + 使用attrs或者context.attrs获取所有属性
+      + 使用v-bing="$attrs"批量绑定属性
+      + 使用 const {size, level, …rest} = context.attrs 将属性分开
+      + props和attrs的区别:
+        + 1、props要先声明才能取值，attrs不用先声明
+        + 2、props不包含事件，attrs包含
+        + 3、props没有声明的属性，会跑到attrs里
+        + 4、props支持string以外类型，attrs只有string类型
+
+    + slot具名插槽的使用
+      ```html
+      vue2
+      <!-- 子组件 -->
+      <slot name="title">
+      <!-- 父组件 -->
+      <template slot="title">
+      <h1>哈哈哈</h1>
+      </template>
+
+      vue3
+      <!-- 子组件用法不变 -->
+      <!-- 父组件 -->
+      <template v-slot:title>
+      <h1>哈哈哈</h1>
+      </template>
+      ```
+
+  + 
+
++ **本质原理**
+
+  + **响应系统的变动**
+    由原来的Object.defineProperty 的getter 和 setter，改变成为了ES2015 Proxy 作为其观察机制。
+Proxy的优势：消除了以前存在的警告，使速度加倍，并节省了一半的内存开销。
+
+  + **虚拟DOM重写（Virtual DOM Rewrite）**
+    虚拟 DOM 从头开始重写，我们可以期待更多的编译时提示来减少运行时开销。重写将包括更有效的代码来创建虚拟节点
+
+  + **组件渲染的优化（优化插槽生成）**
+    Vue2当中在父组件渲染同时，子组件也会渲染。 Vue3就可以单独渲染父组件、子组件。 
+
+  + **静态树提升（Static Tree Hoisting）**
+     使用静态树提升，这意味着 Vue 3 的编译器将能够检测到什么是静态组件，然后将其提升，从而降低了渲染成本。它将能够跳过未整个树结构打补丁的过程。
+
+## 四、 为啥要有组合式api，有啥优点，区别于mixins...等？
 
 ### 1、使用组合式api原因 及优点
 
@@ -147,10 +211,21 @@ function render(){
 - 也可以使用API创建自定义渲染器直接渲染到WebGL,而不是DOM节点
 - 提供了以编程方式构造、检查、克隆以及操作所需的DOM操作的能力
 
+
+**局部虚拟dom如何更新到真实dom中??**
+
+  真实 DOM 的对象（HTMLElement 类型）是被记录到虚拟 DOM 对象中的，是它的一个属性（$options.el）。
+  sel 元素选择器 
+  data 元素属性 ●
+  children 元素子节点 ●
+  text 元素文本 ●
+  elm 对应dom元素 ●
+  key
 ### 5、Vue3 Reactivity响应式
 
-
+## 六、Vue3
 
 ## 参考文档
 
 + [Justin3go的博客--/汇总分类/前端框架/](https://justin3go.com/%E6%B1%87%E6%80%BB%E5%88%86%E7%B1%BB/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/)
++ [Vue3 Compiler 优化细节，如何手写高性能渲染函数](https://zhuanlan.zhihu.com/p/150732926)
