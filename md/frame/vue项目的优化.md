@@ -4,7 +4,7 @@
 
 ### 1、vue异步组件实现路由懒加载
 
-　　component：resolve=>(['需要加载的路由的地址'，resolve])
+　　component：resolve=>require(['需要加载的路由的地址'，resolve])
 
 ### 2、es提出的import(推荐使用这种方式)
 

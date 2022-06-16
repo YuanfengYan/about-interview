@@ -138,7 +138,7 @@ var webpackConfig = {
 
 1. 配置CDN+externals  
 2. 提取vendor
-3. 开启happypack的线程池（node.js采用单线程异步非阻塞模式，也就是说每一个计算独占cpu，遇到I/O请求不阻塞后面的计算，当I/O完成后，以事件的方式通知，继续执行计算）
+3. 开启happypack的线程池（node.js采用单线程异步非阻塞模式，也就是说每一个计算独占cpu，遇到I/O请求不阻塞后面的计算，当I/O完成后，以事件的方式通知，继续执行计算）// happypack 在webpack4.0发布后开始不维护，也可以使用webpack自带的 thread-loader
 
 ```javascript
 var HappyPack = require('happypack');  
@@ -321,3 +321,9 @@ require.context(directory, useSubdirectories, regExp)
 + [关于webpack的面试题](https://www.cnblogs.com/gaoht/p/11310365.html)
 + [webpack5 和 webpack4 的区别有哪些 ](https://blog.csdn.net/weixin_48181168/article/details/120445028)
 + [webpack 源码解读(3)--CommonsChunkPlugin](https://zhuanlan.zhihu.com/p/33676967)
++ [webpack面试知识点](https://blog.csdn.net/Moonoly/article/details/113928160)
++ 
+
+## 实践文档笔记
+
+- [从零开始使用webpack 搭建vue项目](https://github.com/YuanfengYan/webpack/blob/master/readme.md)

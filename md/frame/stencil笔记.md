@@ -3,7 +3,7 @@
  * @Author: yanyuanfeng
  * @Date: 2021-03-09 14:25:32
  * @LastEditors: yanyuanfeng
- * @LastEditTime: 2021-03-10 11:12:28
+ * @LastEditTime: 2022-03-18 14:41:31
 -->
 # stencil笔记
 
@@ -98,3 +98,8 @@ window.addEventListener('appload', (event) => {
 - attribute 是HTML标签上的特性，表现为DOM节点的attributes属性，它的值只能够是字符串；
 - attribute 和 property之间的数据绑定是单向的，修改 attribute 会导致 property发生修改；
 - 更改property和attribute上的任意值，都会将更新反映到HTML页面中。
+
+
+## 参考文档
+
+[stenciljs官方文档](https://stenciljs.com/docs/getting-started)
