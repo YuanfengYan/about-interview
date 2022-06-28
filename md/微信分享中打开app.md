@@ -3,7 +3,7 @@
  * @Author: yanyuanfeng
  * @Date: 2022-06-21 18:31:03
  * @LastEditors: yanyuanfeng
- * @LastEditTime: 2022-06-21 19:01:32
+ * @LastEditTime: 2022-06-28 17:20:41
 -->
 # 微信分享中打开app
 
@@ -39,10 +39,12 @@
             <template>
                 <style>
                     .wx-btn {
-                        opacity: 0
+                        opacity: 0;
+                        width:100%;
+                        height:100%;
                     }
                 </style>
-                <button class="wx-btn"></button>
+                <button class="wx-btn" style="width:100px;height100px"></button>
             </template>
         </wx-open-launch-app>
     
@@ -150,6 +152,11 @@ wx.config({
 
 
 
+## 四、 遇到的坑
+
+低级问题：微信签名错误导致。
+
++ 需要app分享出来的链接才能触发打开app，手动拼接的会存在打不开
 
 
 
