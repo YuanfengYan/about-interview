@@ -67,9 +67,9 @@ function render(){
 
 + **使用上**
 
-  + 组合式api
+  + **组合式api**
 
-  + Teleport 挂载到对应的UI DOM节点,并保持创建初期Teleport所作为的逻辑子组件
+  + **Teleport 挂载到对应的UI DOM节点,并保持创建初期Teleport所作为的逻辑子组件**
         ```html
         <Teleport to="body">
         需要传送到body下面的内容
@@ -78,23 +78,36 @@ function render(){
 
   + 片段 （鸡肋）
 
-  + 语法糖 单文件组件 (script setup)
+  + **语法糖** 单文件组件 (script setup)
 
       非兼容变更
 
-  + v-model 替代 原先的v-model.sync(v-bind.sync) <==> </input :modelValue="t" @update:modelValue = 't= $event' > 
+  + **v-model 替代 原先的v-model.sync**(v-bind.sync) <==> </input :modelValue="t" @update:modelValue = 't= $event' > 
     + 原先的v-model 等价于  </input :modelValue="t" @input:modelValue = 't= $event' > 
     + 现在v-model等价于原先的v-model.sync等价于  </input :modelValue="t" @update:modelValue = 't= $event' >  
 
-  + key </template v-for> 的 key 应该设置在 </template> 标签上 (而不是设置在它的子节点上)。 
+  + **key** </template v-for> 的 key 应该设置在 < template > 标签上 (而不是设置在它的子节点上)。 
 
-  + 2.x 版本中在一个元素上同时使用 v-if 和 v-for 时，v-for 会优先作用  /  3.x 版本中 v-if 总是优先于 v-for 生效。
+    ``` html
+          <!-- Vue 2.x -->
+    <template v-for="item in list">
+      <div :key="item.id">...</div>
+      <span :key="item.id">...</span>
+    </template>
+    <!-- Vue 3.x -->
+    <template v-for="item in list" :key="item.id">
+      <div>...</div>
+      <span>...</span>
+    </template>
+    ```
 
-  + v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果
+  + **2.x 版本中在一个元素上同时使用 v-if 和 v-for 时，v-for 会优先作用  /  3.x 版本中 v-if 总是优先于 v-for 生效。**
+
+  + **v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果**
 
   + 新增context.emit，与this.$emit（vue3中只能在方法里使用）作用相同
 
-  + Vue3中的属性绑定
+  + **Vue3中的属性绑定**
   
       + 默认所有属性都绑定到根元素
       + 使用inheritAttrs: false可以取消默认绑定
@@ -107,7 +120,7 @@ function render(){
         + 3、props没有声明的属性，会跑到attrs里
         + 4、props支持string以外类型，attrs只有string类型
 
-    + slot具名插槽的使用
+    + slot具名插槽的使用(v2.6.0开始)[参考链接](https://www.jianshu.com/p/0d54f6a65fda)
       ```html
       vue2
       <!-- 子组件 -->
@@ -129,18 +142,18 @@ function render(){
 
 + **本质原理**
 
-  + **响应系统的变动**
-    由原来的Object.defineProperty 的getter 和 setter，改变成为了ES2015 Proxy 作为其观察机制。
-Proxy的优势：消除了以前存在的警告，使速度加倍，并节省了一半的内存开销。
+    + **响应系统的变动**
+      由原来的Object.defineProperty 的getter 和 setter，改变成为了ES2015 Proxy 作为其观察机制。
+  Proxy的优势：消除了以前存在的警告，使速度加倍，并节省了一半的内存开销。
 
-  + **虚拟DOM重写（Virtual DOM Rewrite）**
-    虚拟 DOM 从头开始重写，我们可以期待更多的编译时提示来减少运行时开销。重写将包括更有效的代码来创建虚拟节点
+    + **虚拟DOM重写（Virtual DOM Rewrite）**
+      虚拟 DOM 从头开始重写，我们可以期待更多的编译时提示来减少运行时开销。重写将包括更有效的代码来创建虚拟节点
 
-  + **组件渲染的优化（优化插槽生成）**
-    Vue2当中在父组件渲染同时，子组件也会渲染。 Vue3就可以单独渲染父组件、子组件。 
+    + **组件渲染的优化（优化插槽生成）**
+      Vue2当中在父组件渲染同时，子组件也会渲染。 Vue3就可以单独渲染父组件、子组件。 
 
-  + **静态树提升（Static Tree Hoisting）**
-     使用静态树提升，这意味着 Vue 3 的编译器将能够检测到什么是静态组件，然后将其提升，从而降低了渲染成本。它将能够跳过未整个树结构打补丁的过程。
+    + **静态树提升（Static Tree Hoisting）**
+       使用静态树提升，这意味着 Vue 3 的编译器将能够检测到什么是静态组件，然后将其提升，从而降低了渲染成本。它将能够跳过未整个树结构打补丁的过程。
 
 ## 四、 为啥要有组合式api，有啥优点，区别于mixins...等？
 
