@@ -19,7 +19,7 @@
   可以使用位运算 [参考文章](https://www.w3school.com.cn/js/pro_js_operators_bitwise.asp)
 ```javascript 
   somenum = 13.5
-  rounded = (0.5 + somenum) | 0; 
+  rounded = (0.5 + somenum) | 0; //原理 在进行按位操作的时候，操作数会先转化为2进制的32bit，先通过无符号右移，取整，再进行按位操作
   rounded = ~~ (0.5 + somenum);
   rounded = (0.5 + somenum) << 0;
   //14

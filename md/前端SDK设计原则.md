@@ -3,11 +3,13 @@
  * @Author: yanyuanfeng
  * @Date: 2022-03-18 15:04:27
  * @LastEditors: yanyuanfeng
- * @LastEditTime: 2022-03-18 15:07:10
+ * @LastEditTime: 2022-07-12 18:34:17
 -->
 # 前端SDK设计原则
 
 ## 一、什么是SDK
+
+可以理解为library
 
 ## 二、 设计原则
 

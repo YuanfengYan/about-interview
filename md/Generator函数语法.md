@@ -63,8 +63,18 @@ function* longRunningTask(value1) {
     利用 Generator 函数，可以在任意对象上部署 Iterator 接口。
 
 ```javascript
+var bar = Symbol('bar')
+var obj = {
+    name:'11',
+    age:'12',
+    aa:23,
+    [bar]:'xxx'
+    
+}
 function* iterEntries(obj) {
   let keys = Object.keys(obj);
+  keys = keys.concat(Object.getOwnPropertySymbols(obj))
+
   for (let i=0; i < keys.length; i++) {
     let key = keys[i];
     yield [key, obj[key]];
