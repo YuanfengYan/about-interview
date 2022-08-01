@@ -334,6 +334,58 @@ const app = new Vue({
 + [Vuex官网介绍](https://vuex.vuejs.org/zh/)
 + [手写Vuex核心原理，再也不怕面试官问我Vuex原理](https://juejin.im/post/6855474001838342151)
 
+### 九、 $refs进行父子组件通信
+
+```javascript
+// 父组件
+<template>
+	<view>
+		<children ref="children"></children>
+	</view>
+</template>
+ 
+<script>
+import children from './children'
+data(){
+    return{
+        List:[1,2,3]
+    }
+}
+mounted() {
+	this.diffuseValues();
+},
+methods:{
+    diffuseValues(){
+        this.$refs.children.getValues(this.List)
+    }
+}
+</script>
+
+// 子组件
+<template>
+	<view>
+		{{item}}
+	</view>
+</template>
+ 
+<script>
+data(){
+    return{
+        item: []
+    }
+}
+mounted() {
+	this.getValues();
+},
+methods:{
+    getValues(values){
+        this.item = values
+    }
+}
+</script>
+
+```
+
 ## 参考文档
 
 + [Vue 组件通信方式全面详解](https://juejin.im/post/6844903784963899405)
