@@ -47,7 +47,7 @@ onLoad () {
         cc.systemEvent.setAccelerometerEnabled(true);
         cc.systemEvent.on(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
     },
-      onDestroy () {
+  onDestroy () {
         cc.systemEvent.off(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
     },
 
@@ -259,6 +259,14 @@ creator界面适配案例:
 ## 二、 搭建单场景项目框架
 
 ### 1、
+
+### 三、 关于自己项目经历
+
+因公司cocos项目多人力紧缺，临时去帮忙做了大半年的cocos项目。
+独立完成2个cocos creator项目。(谁是最大糊涂蛋，个人中心) 参与（答题pk,恐龙化博物馆，qdl, 海洋巨无霸等4个项目 ）
+熟悉cocos creator单场景+多预制体模式的框架搭建（界面中的窗体都按需加载, 复用性高. 使用者只需要关心界面内的逻辑）
+项目优化：对于多个cocos 项目，提取引擎文件进行打包。
+为啥使用：可以快速实现各种酷炫的动画，
 ## 做的项目
 
 [弹弹球][https://github.com/YuanfengYan/cocos-bollgame]

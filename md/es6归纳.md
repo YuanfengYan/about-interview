@@ -145,3 +145,56 @@ Math.hypot方法返回所有参数的平方和的平方根。
     Math.fround() 、Math.imul() 、Math.clz32()
 
 ...
+
+### Promise
+
+1. Promise.allSettled()  Es9 = ES2020  引入
+
+    方法接受一个数组作为参数，数组的每个成员都是一个 Promise 对象，并返回一个新的 Promise 对象。只有等到参数数组的所有 Promise 对象都发生状态变更（不管是 fulfilled还是rejected），返回的 Promise 对象才会发生状态变更。
+
+返回固定结构
+
+```javascript
+    // 异步操作成功时
+  {status: 'fulfilled', value: value}
+
+  // 异步操作失败时
+  {status: 'rejected', reason: reason}
+```
+
+```javascript
+const resolved = Promise.resolve(42);
+const rejected = Promise.reject(-1);
+
+const allSettledPromise = Promise.allSettled([resolved, rejected]);
+
+allSettledPromise.then(function (results) {
+  console.log(results);
+});
+// [
+//    { status: 'fulfilled', value: 42 },
+//    { status: 'rejected', reason: -1 }
+// ]
+```
+
+2. Promise.any()   es10 = es2021 
+
+  只要参数实例有一个变成fulfilled状态，包装实例就会变成fulfilled状态；如果所有参数实例都变成rejected状态，包装实例就会变成rejected状态。
+
+```javascript
+Promise.any([
+  fetch('https://v8.dev/').then(() => 'home'),
+  fetch('https://v8.dev/blog').then(() => 'blog'),
+  fetch('https://v8.dev/docs').then(() => 'docs')
+]).then((first) => {  // 只要有一个 fetch() 请求成功
+  console.log(first);
+}).catch((error) => { // 所有三个 fetch() 全部请求失败
+  console.log(error);
+});
+```
+
+## 参考文档
+
++ [es6-阮一峰](https://es6.ruanyifeng.com/#docs/proposals)
+  
++ 👍[ES6-ES12所有特性详解](https://blog.csdn.net/wang13679201813/article/details/124787648)

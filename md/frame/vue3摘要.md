@@ -85,6 +85,7 @@ function render(){
   + **v-model 替代 原先的v-model.sync**(v-bind.sync) <==> </input :modelValue="t" @update:modelValue = 't= $event' > 
     + 原先的v-model 等价于  </input :modelValue="t" @input:modelValue = 't= $event' > 
     + 现在v-model等价于原先的v-model.sync等价于  </input :modelValue="t" @update:modelValue = 't= $event' >  
+    + [参考链接-Vue3中v-model的使用](https://juejin.cn/post/6914946160037724174)
 
   + **key** </template v-for> 的 key 应该设置在 < template > 标签上 (而不是设置在它的子节点上)。 
 
