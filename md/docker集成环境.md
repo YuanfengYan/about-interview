@@ -198,7 +198,11 @@ Dockerfile:
      }
    }
  ```
-5. vue.config.js中添加
+5. 修改host文件添加
+```javascript
+127.0.0.1 mom-test.d.ahaschool.com
+```
+6. vue.config.js中添加
 因为不加的话会一直报
  Invalid Host/Origin header
 虽然不影响开发，但会影响开发体验
