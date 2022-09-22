@@ -130,7 +130,11 @@ class Clock implements ClockInterface {
 // 接口描述了类的公共部分，而不是公共和私有两部分。 它不会帮你检查类是否具有某些私有成员。
 ```
   
-  implements与extends的定位 [引用](https://1991421.cn/2020/01/30/9b18a5df/) / [Class属性Extends和Implements的区别 参考链接](https://blog.csdn.net/web_doris/article/details/11517759)
+  implements与extends的定位
+
+  + [extends和implements的区别](https://blog.csdn.net/King_crazy/article/details/105665377) 
+  + [Class属性Extends和Implements的区别 参考链接](https://blog.csdn.net/web_doris/article/details/11517759)
+  
   implements
   顾名思义，实现，一个新的类，从父类或者接口实现所有的属性和方法，同时可以重写属性和方法，包含一些新的功能
 
@@ -697,11 +701,467 @@ for (let pet of pets) {
     console.log(pet); // "Cat", "Dog", "Hamster"
 }
 ```
+
+## ts示例
+
+```javascript
+// 联合数组类型
+let ani: (string | number | boolean)[] = [1, '2', true]
+
+type Ani = string | number | boolean
+let ani2: Ani[] = [1, '2', true]
+
+// 兼容
+interface Named {
+    name: string;
+}
+
+let x: Named;
+let y = { name: 'Alice', location: 'Seattle' };
+x = y;
+
+// 交叉类型 type合并
+type Name = { name: string } & { age: number }
+// let name2:Name = {name:"jack"} //报错
+let name2: Name = { name: "jack", age: 12 } //ok
+
+// interface合并
+interface User {
+  name: string
+  age: number
+}
+interface User {
+  sex: string
+}
+let user: User = { name: 'xx', age: 18, sex: 'nan' }
+
+type Alias = { num: number }
+interface Interface {
+    num: number;
+}
+
+type Easing = "ease-in" | "ease-out" | "ease-in-out";
+
+// Color合并
+interface Color { 
+  name1: string,
+  getname(): string,
+  age: number|string,
+  setage(age:number):void
+}
+interface Color { 
+  name2: number,
+}
+
+
+interface Bg { 
+  background:string
+}
+// 类实现多个接口
+class MyColor implements Color,Bg{
+  name1 = '2';
+  name2 = 4;
+  background: string;
+  age: string;
+  addr: string;
+  setage(str) { 
+    this.age = '12'
+    return str
+  };
+  getname() { 
+    return 'this.name'
+  };
+  constructor(public h: number, m: number) { 
+
+  }
+
+}
+// 接口继承类
+interface Info extends MyColor { 
+  phone: string;
+} 
+class AnotherColor implements Info  { 
+  name1 = '2';
+  phone = '123';
+  name2 = 4;
+  background: string;
+  age: string;
+  addr: string;
+  setage(str) { 
+    this.age = '12'
+    return str
+  };
+  getname() { 
+    return 'this.name'
+  };
+  constructor(public h: number, m: number) { 
+
+  }
+}
+
+// 接口继承接口
+interface Shape {
+    color: string;
+}
+
+interface PenStroke {
+    penWidth: number;
+}
+
+interface Square extends Shape, PenStroke {
+    sideLength: number;
+}
+class MySauqre implements Square { 
+  color = '2';
+  penWidth = 2;
+  sideLength = 2;
+}
+console.log(new MySauqre().color)
+const mycolor = new MyColor(1,2)
+
+
+// 约束了loggingIdentity的T泛型，必须要是含有length为number 的属性
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+    console.log(arg.length);  // Now we know it has a .length property, so no more error
+    return arg;
+}
+loggingIdentity({ length: 12 })
+
+// 接口继承Type
+type Name = { 
+  name: string; 
+}
+interface User extends Name { 
+  age: number; 
+}
+
+let user: User = {
+  age: 12,
+  name:'1'
+}
+// 命名空间
+declare namespace API {
+  interface ResponseList { }
+  namespace API2 { 
+    interface ABC { 
+      a: string,
+      b:number
+    }
+  }
+}
+let bb: API.API2.ABC = {
+  a: '11',
+  b: 123
+}
+
+```
+
+## ts 内置工具
+- [TS 里几个常用的内置工具类型（Record、Partial 、 Required 、 Readonly、 Pick 、 Exclude 、 Extract 、 Omit）的使用 -参考链接](https://blog.csdn.net/qq_43869822/article/details/121664818)
+- [官方地址](https://www.typescriptlang.org/docs/handbook/utility-types.html)
+  Capitalize  首字母大写
+  Uppercase 字母大写
+## ts练习
+```javascript
+interface Todo { 
+    name: string,
+    age: number,
+    addr:string
+}
+
+// 实现Pick
+type MyPick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+interface Todo { 
+    name: string,
+    age: number,
+    addr:string
+}
+type My = MyPick<Todo, "age" | "name">
+
+const todo:My = {
+    name: 'x',
+    age: 2,
+
+}
+// 实现Readonly<T>
+    // 方案一
+type MyReadonly<T,K extends keyof T = keyof T> = {
+  readonly[key in K]:T[key]
+}
+    // 方案二
+type ReadOnly<T> = {
+    readonly [K in keyof T]: T[K];
+};
+const r1:MyReadonly<Todo> = {
+    name: '1',
+    age: 2,
+    addr:'1'
+}
+// r1.name = '2'
+// 元组转换对象
+// type TupleToObject<T extends readonly any[]>={ 
+//   [Key in T[number]]:Key
+// }
+type First<T extends any[]> = T extends [infer F,infer S, ...infer Rest] ? S : never
+type A1 = [number,string]
+const arr1:A1 = [1, '2']
+const a :First<A1> = '2'
+
+
+interface Fish {
+    fish: string
+}
+interface Water {
+    water: string
+}
+interface Bird {
+    bird: string
+}
+interface Sky {
+    sky: string
+}
+//naked type
+type Condition<T> = T extends Fish ? Water : Sky;
+// type FishBird = Fish | Bird
+let condition1: Condition<Fish | Bird> = { water: '水',sky: "ss"};
+let condition2: Condition<Fish | Bird> = { sky: '天空' };
+let condition3: Fish | Bird = { fish: '天空', bird: '' };
+type Diff<T, U> = T extends U ? never : T;
+
+type R = Diff<"a" | "b" | "c" | "d", "a" | "c" | "f">;  // "b" | "d"
+
+ const add =function (a: number, b: number): number{ return a+b }
+type aa = ReturnType<(a: number, b: number) => number>
+
+// 第一个元素
+type arr1 = [3, 2, 1]
+type First1<T extends any[]> = T['length'] extends 0?never: T[0] 
+type head1 = First1<arr1> //3
+
+// 创建一个通用的Length，接受一个readonly的数组，返回这个数组的长度。
+
+type tesla = ['tesla', 'model 3', 'model X', 'model Y']
+type Length<T extends readonly any[]> = T['length'] 
+type teslaLength = Length<tesla> // expected 4
+
+// 实现内置的Exclude <T, U>类型
+type MyExclude<T,U> =   T extends U ? never:T
+type Result = MyExclude<'a' | 'b' | 'c', 'a'> // 'b' | 'c'
+
+// Awaited
+type ExampleType = Promise<string>
+// type MyAwaited<T> = 
+// type MyAwaited<T> = T extends Promise<infer Return> ? MyAwaited<Return> : T
+type MyAwaited<T extends Promise<any>> = T extends Promise<infer I> ?
+ I extends Promise<any> ? MyAwaited<I> : I 
+ : never
+type Result2 = MyAwaited<ExampleType> // string
+
+// if
+type IF<T extends boolean,U,K> = T extends true?U:K
+type A = IF<false, 'a', 'b'>  // expected to be 'a'
+
+// 在类型系统里实现 JavaScript 内置的 Array.concat 方法
+type Concat<T extends any[],K extends any[]> = [...T,...K]
+type Result3 = Concat<[1], [2]> // expected to be [1, 2]
+
+// Includes
+//  type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false;
+type IsEqual<X, Y> =
+(<T>() => T extends X ? 1 : 2) extends
+(<T>() => T extends Y ? 1 : 2) ? true : false
+type Includes<T extends any[], U> = T extends  [infer First, ...infer Rest] ? IsEqual<First, U> extends true? true  : Includes<Rest, U> :false
+type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'xxxx'], 'Dio'> // expected to be `false`
+
+```
+## ts中级联系
+```javascript
+// 中等题
+
+// 实现一个通用MyReadonly2<T, K>，它带有两种类型的参数T和K。
+// K指定应设置为Readonly的T的属性集。如果未提供K，则应使所有属性都变为只读，就像普通的Readonly<T>一样。
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+type MyReadonly2<T,K extends keyof T = keyof T > = {
+  readonly [key in K]:T[key] //把所有在k定义的键 readonly
+}&{
+   [key in keyof T as key extends K ? never : key] : T[key] ////把所有在k定义的键不设置，而不在的设置为非readyOnly
+}
+// type MyReadonly2<T,K extends keyof T = keyof T> = {
+//   readonly [ P in K ]: T[P]
+// } & {
+//   -readonly [ P in keyof T as P extends K ? never : P]: T[P]
+// }
+const todo: MyReadonly2<Todo, 'title' | 'description'> = {
+  title: "Hey",
+  description: "foobar",
+  completed: false,
+}
+
+todo.title = "Hello" // Error: cannot reassign a readonly property
+todo.description = "barFoo" // Error: cannot reassign a readonly property
+todo.completed = true // OK
+// Omit
+type AA =  {
+  title: string,
+  description: string,
+  completed: boolean,
+}
+
+type oo = Omit<AA,'title' | 'description'>
+// 实现一个通用的DeepReadonly<T>，它将对象的每个参数及其子对象递归地设为只读。
+type X = { 
+  x: { 
+    a: 1
+    b: 'hi'
+  }
+  y: 'hey'
+}
+type Expected = { 
+  readonly x: { 
+    readonly a: 1
+    readonly b: 'hi'
+  }
+  readonly y: 'hey' 
+}
+type D = string | boolean | (() => any);
+
+type DeepReadonly<T> = T extends D ? {
+ readonly [key in keyof T] : T[key]
+} : {
+  readonly [key in keyof T] : DeepReadonly<T[key]>
+}
+type Todo2 = DeepReadonly<X> // should be same as `Expected`
+
+// 实现泛型TupleToUnion<T>，它返回元组所有值的合集。
+type Arr = ['1', '2', '3']
+type TupleToUnion<T extends any[]> = T[number] 
+type Test = TupleToUnion<Arr> // expected to be '1' | '2' | '3'
+
+// 可串联构造器
+// type Chainable<P extends {} = {}> = {
+//   option<T extends string, K > (key:T extends keyof P? T:never,value:K):Chainable<P &{[T in P]:K}>,
+// }
+type Chainable<O = {}> = {
+  option<K extends string, V>(k: K extends keyof O ? never : K, v: V): Chainable<Omit<O, K> & {
+    [P in K]: V
+  }>
+  get(): O
+}
+declare const config: Chainable
+const result = config
+  .option('foo', 123)
+  .option('name', 'type-challenges')
+  .option('bar', { value: 'Hello World' })
+  .get()
+
+// 期望 result 的类型是：
+interface Result {
+  foo: number
+  name: string
+  bar: {
+    value: string
+  }
+}
+
+// 实现一个通用Last<T>，它接受一个数组T并返回其最后一个元素的类型。
+type arr11 = ['a', 'b', 'c']
+type arr21 = [3, 2, 1]
+type Last<T extends any[]> = T extends [...infer L,infer R] ?R:undefined
+type tail1 = Last<arr11> // expected to be 'c'
+type tail2 = Last<arr21> // expected to be 1
+// 实现一个通用Pop<T>，它接受一个数组T，并返回一个由数组T的前length-1项以相同的顺序组成的数组。
+type arr1 = ['a', 'b', 'c', 'd']
+type arr2 = []
+type Pop<T extends any[]> = T extends [...infer L, infer R]?L:never
+type re1 = Pop<arr1> // expected to be ['a', 'b', 'c']
+type re2 = Pop<arr2> // expected to be [3, 2]
+// Promise.all
+// 键入函数PromiseAll，它接受PromiseLike对象数组，返回值应为Promise<T>，其中T是解析的结果数组。
+const promise1 = Promise.resolve(3);
+const promise2 = 42;
+const promise3 = new Promise<string>((resolve, reject) => {
+  setTimeout(resolve, 100, 'foo');
+});
+declare function PromiseAll<T extends readonly any[]>(
+  values:readonly [...T]
+): Promise<
+  {
+    [K in keyof T]: T[K] extends Promise<infer R> ? R : T[K];
+  }
+>;
+// expected to be `Promise<[number, 42, string]>`
+const p = PromiseAll([promise1, promise2, promise3] as const)
+
+// Type Lookup 我们期望LookUp<Dog | Cat, 'dog'>获得Dog，LookUp<Dog | Cat, 'cat'>获得Cat。
+interface Cat {
+  type: 'cat'
+  breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal'
+}
+
+interface Dog {
+  type: 'dog'
+  breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer'
+  color: 'brown' | 'white' | 'black'
+}
+type LookUp<T,K extends string> = {
+  [key in K] : T extends {type:K}?T:never
+}[K]
+// type LookUp<U, T extends string> = {
+//   [K in T]: U extends { type: T } ? U : never
+// }[T]
+type MyDog = LookUp<Cat | Dog, 'dog'|'cat'> // expected to be `Cat|Dog`
+type MyDog1 = LookUp<Cat | Dog, 'dog'> // expected to be `Dog`
+
+// Trim Left 实现 TrimLeft<T> ，它接收确定的字符串类型并返回一个新的字符串，其中新返回的字符串删除了原字符串开头的空白字符串。
+type TrimLeft<T extends string> = T extends `${' '|'\n'|'\t'}${infer s}`? TrimLeft<s>:T
+type trimed = TrimLeft<'  Hello World  '> // 应推导出 'Hello World  '
+
+// Capitalize 实现 Capitalize<T> 它将字符串的第一个字母转换为大写，其余字母保持原样。
+type  MyCapitalize<T extends string> = T extends `${infer L}${infer R}`? `${Uppercase<L>}${R}`:T
+type capitalized = MyCapitalize<'hello world'> // expected to be 'Hello world'
+
+// Replace 实现 Replace<S, From, To> 将字符串 S 中的第一个子字符串 From 替换为 To 。
+type Replace<S extends string, F extends string, T extends string> = S extends `${infer L}${F}${infer R}`?`${ L}${T}${ R}`:never
+type replaced = Replace<'types are fun!', 'fun', 'awesome'> // 期望是 'types are awesome!'
+
+// ReplaceAll 实现 ReplaceAll<S, From, To> 将一个字符串 S 中的所有子字符串 From 替换为 To。
+type ReplaceAll<S extends string , F extends string, T extends string> = S extends `${infer L}${F}${infer R}`?ReplaceAll<`${L}${T}${R}`,F,T>:S
+type replaced = ReplaceAll<'t y p e s', ' ', ''> // 期望是 'types'
+
+// type C<T extends '23'> = T
+// let a:C<'23'>
+
+// 实现一个泛型 AppendArgument<Fn, A>，对于给定的函数类型 Fn，以及一个任意类型 A，返回一个新的函数 G。G 拥有 Fn 的所有参数并在末尾追加类型为 A 的参数。
+
+type Fn = (a: number, b: string) => number
+type AppendArgument<F ,D> = F extends (...arg:infer R)=>infer T ?(...arg:[...R,T])=>T:never
+type Result = AppendArgument<Fn, boolean> 
+
+
+```
+## 其他
+
+
+- [ts的.d.ts和declare究竟是干嘛用的](https://blog.csdn.net/qq_34551390/article/details/118800743)
+
 ## 参考文档
 
 [typescript](https://www.tslang.cn/docs)
 
-
+- [typescript （TS）进阶篇 --- 内置高阶泛型工具类型（Utility Type）](https://blog.csdn.net/m0_52409770/article/details/123049461)
+- [typescript在线练习](https://www.tslang.cn/play/index.html)
+- [typescript在线练习2](https://www.typescriptlang.org/play)
+- [type-challenges](https://github.com/type-challenges/type-challenges/blob/main/README.zh-CN.md)
 
 ```typescript
 ```
