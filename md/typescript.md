@@ -702,7 +702,7 @@ for (let pet of pets) {
 }
 ```
 
-## ts示例
+## **ts示例**
 
 ```javascript
 // 联合数组类型
@@ -861,11 +861,17 @@ let bb: API.API2.ABC = {
 ```
 
 ## ts 内置工具
+
 - [TS 里几个常用的内置工具类型（Record、Partial 、 Required 、 Readonly、 Pick 、 Exclude 、 Extract 、 Omit）的使用 -参考链接](https://blog.csdn.net/qq_43869822/article/details/121664818)
+
 - [官方地址](https://www.typescriptlang.org/docs/handbook/utility-types.html)
+
   Capitalize  首字母大写
   Uppercase 字母大写
+  Exclude 和 Extract
+
 ## ts练习
+
 ```javascript
 interface Todo { 
     name: string,
@@ -1147,6 +1153,290 @@ type Fn = (a: number, b: string) => number
 type AppendArgument<F ,D> = F extends (...arg:infer R)=>infer T ?(...arg:[...R,T])=>T:never
 type Result = AppendArgument<Fn, boolean> 
 
+// Permutation
+// 实现联合类型的全排列，将联合类型转换成所有可能的全排列数组的联合类型。
+type Permutation<T,U =T> = [T] extends [never]?[]:T extends U ? [T, ...Permutation<Exclude<U,T>>]:never //之所以用[T] extends 官方介绍https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types
+type perm = Permutation<'A' | 'B' | 'C'>; // ['A', 'B', 'C'] | ['A', 'C', 'B'] | ['B', 'A', 'C'] | ['B', 'C', 'A'] | ['C', 'A', 'B'] | ['C', 'B', 'A']
+
+// 在这个挑战中，你需要写一个接受数组的类型，并且返回扁平化的数组类型。
+type Flatten<T extends any[]> =T['length'] extends 0? []:T extends [infer L, ...infer R] ? 
+    L extends any[]?
+        [...Flatten<L>,...Flatten<R>]:[L,...Flatten<R>]
+    : never
+type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, 5]
+
+// 实现一个为接口添加一个新字段的类型。该类型接收三个参数，返回带有新字段的接口类型。
+type Test = { id: '1' }
+type Merge<T> = {
+  [P in keyof T]: T[P]
+}
+type AppendToObject<T extends object,K extends string,V extends any> = Merge<{
+    [key in keyof T] :T[key]
+}&{
+   [key in K]:V
+}>
+type Result = AppendToObject<Test, 'value', 4> // expected to be { id: '1', value: 4 }
+
+// 实现一个接收string,number或bigInt类型参数的Absolute类型,返回一个正数字符串。
+
+type Test2 = -100;
+type Absolute<T extends string|number> = `${T}` extends `-${infer S}` ? S:T 
+type Result2 = Absolute<Test2>; // expected to be "100"
+
+// 实现一个将接收到的String参数转换为一个字母Union的类型。
+type Test3 = '123';
+type StringToUnion<T extends string> = T extends ''?never: T extends  `${infer N}${infer OTHER}` ? N|StringToUnion<OTHER>:never
+type Result3 = StringToUnion<Test3>; // expected to be "1" | "2" | "3"
+
+// Merge
+// 将两个类型合并成一个类型，第二个类型的键会覆盖第一个类型的键。
+type foo = {
+  name: string;
+  age: string;
+}
+type coo = {
+  age: number;
+  sex: string
+}
+type Merge3<T extends object,K extends object> = {
+    [key in keyof T]:T[key],
+}
+type Merge2<T, U> = {
+  [K in keyof (T & U)]: K extends keyof U
+    ? U[K]
+    : K extends keyof T
+    ? T[K]
+    : never;
+};
+
+// type Merge3<T, U> = Omit<Omit<T, keyof U> & U, never>;
+
+type Result4 = Merge3<foo,coo>; // expected to be {name: string, age: number, sex: string}
+
+// KebabCase 大写字母转-
+
+type FirstLowcase<T extends string> = T extends `${infer F}${infer R}`
+  ? F extends Lowercase<F> ? T : `${Lowercase<F>}${R}`
+  : T //第一个字母转小写
+type KebabCase<T extends string>= T extends `${infer F}${infer R}`?R extends FirstLowcase<R> ? `${FirstLowcase<F>}${KebabCase<R>}`:`${FirstLowcase<F>}-${KebabCase<FirstLowcase<R>>}` :T
+
+type FooBarBaz = KebabCase<"FooBarBaz">;
+const foobarbaz: FooBarBaz = "foo-bar-baz";
+
+type DoNothing = KebabCase<"do-nothing">;
+const doNothing: DoNothing = "do-nothing";
+
+// 获取两个接口类型中的差值属性。
+type Foo = {
+  a: string;
+  b: number;
+}
+type Bar = {
+  a: string;
+  c: boolean
+}
+type Comtype = Exclude<keyof Bar, keyof Foo>
+// 一
+// type Diff<T ,K  > = {
+//     [key in Exclude<keyof T, keyof K>|Exclude<keyof K, keyof T>]: key extends keyof T? T[key] : K[key],
+// }
+// 二
+type Diff<O, O1> = {[K in keyof O|keyof O1 as K extends keyof O?K extends keyof O1?never:K:K]:K extends keyof O1?O1[K]:K extends keyof O?O[K]:never}
+
+type Result11 = Diff<Foo,Bar> // { b: number, c: boolean }
+type Result22 = Diff<Bar,Foo> // { b: number, c: boolean }
+
+// AnyOf
+type Falsy = '' | [] | false | Record<keyof any, never> | 0;
+type AnyOf<T extends any[]> = T[number] extends Falsy ? false : true;
+type Sample1 = AnyOf<[1, '', false, [], {}]> // expected to be true.
+type Sample2 = AnyOf<[0, '', false, [], {}]> // expected to be false.
+
+// IsUnion
+type IsUnion<T, B = T> = T extends T
+  ? [Exclude<B, T>] extends [never]
+    ? false
+    : true
+  : never; 
+type case1 = IsUnion<string>  // false
+type case2 = IsUnion<string|number>  // true
+type case3 = IsUnion<[string|number]>  // false
+// ReplaceKeys
+
+type NodeA = {
+  type: 'A'
+  name: string
+  flag: number
+}
+type NodeB = {
+  type: 'B'
+  id: number
+  flag: number
+}
+type NodeC = {
+  type: 'C'
+  name: string
+  flag: number
+}
+type ReplaceKeys<U, T extends keyof any, Y extends Record<any, any>, G = U> =
+  U extends G
+    ? {
+      [k in keyof U]: k extends T
+        ? keyof Y extends T
+          ? Y[k]
+          : never
+        : U[k]
+    }
+    : never
+type Nodes = NodeA | NodeB | NodeC
+type ReplacedNodes = ReplaceKeys<Nodes, 'name' | 'flag', {name: number, flag: string}> // {type: 'A', name: number, flag: string} | {type: 'B', id: number, flag: string} | {type: 'C', name: number, flag: string} // would replace name from string to number, replace flag from number to string.
+type ReplacedNotExistKeys = ReplaceKeys<Nodes, 'name', {aa: number}> // {type: 'A', name: never, flag: number} | NodeB | {type: 'C', name: never, flag: number} // would replace name to never
+// 实现类型 PercentageParser。根据规则 /^(\+|\-)?(\d*)?(\%)?$/ 匹配类型 T。
+
+type PString1 = ''
+type PString2 = '+85%'
+type PString3 = '-85%'
+type PString4 = '85%'
+type PString5 = '85'
+
+type IsSigns<T> = T extends '+' | '-' ? T : never;
+type GetNumber<T> = 
+  T extends `${IsSigns<infer R>}${infer L}` 
+  ? [R, L] 
+  : ['', T]
+type PercentageParser<A extends string> = A extends `${infer R}%`
+  ? [...GetNumber<R>, '%']
+  : [...GetNumber<A>, '']
+type R1 = PercentageParser<PString1> // expected ['', '', '']
+type R2 = PercentageParser<PString2> // expected ["+", "85", "%"]
+type R3 = PercentageParser<PString3> // expected ["-", "85", "%"]
+type R4 = PercentageParser<PString4> // expected ["", "85", "%"]
+type R5 = PercentageParser<PString5> // expected ["", "85", ""]
+
+// 从字符串中剔除指定字符。
+type DropChar<T extends string, K extends string> = T extends `${infer R}${infer L}` ? R extends K ? DropChar<L,K>:`${R}${DropChar<L,K>}` :''
+// type DropChar<S, C> = S extends `${infer F}${infer R}`
+//     ? `${F extends C ? '' : F}${DropChar<R, C>}`
+//     : ''
+// type DropChar<S extends string, C extends string > = S extends `${infer First}${C}${infer Rest}`?`${First}${DropChar<Rest, C>}`:  S
+type Butterfly = DropChar<' b u t t e r f l y ! ', ' '> // 'butterfly!'
+
+// PickByType
+type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K];
+};
+type OnlyBoolean = PickByType<{
+  name: string
+  count: number
+  isReadonly: boolean
+  isEnable: boolean
+}, boolean> // { isReadonly: boolean; isEnable: boolean; }
+
+// StartsWith
+type StartsWith<T extends string, C extends string> = T extends `${C}${infer R}`?true :false
+type a = StartsWith<'abc', 'ac'> // expected to be false
+type b = StartsWith<'abc', 'ab'> // expected to be true
+type c = StartsWith<'abc', 'abcd'> // expected to be false
+
+// PartialByKeys
+interface User {
+  name: string
+  age: number
+  address: string
+}
+type Merge<T> = {
+    [key in keyof T]:T[key]
+}
+type PartialByKeys<T extends Record<any,any>, K extends keyof T> = Merge<{
+     [key in keyof T as key extends K?key:never]?:T[key]
+}&
+{
+    [key in keyof T as key extends K?never:key]:T[key]
+}>
+// type Copy<T> = {
+//   [P in keyof T]: T[P]
+// }
+
+// type PartialByKeys<T, K = keyof T> = Copy<Omit<T, K & keyof T> & {
+//   [P in K & keyof T]?: T[P]
+// }>
+
+type UserPartialName = PartialByKeys<User, 'name'> // { name?:string; age:number; address:string }
+
+// RequiredByKeys
+interface User {
+  name?: string
+  age?: number
+  address?: string
+}
+type Merge<T> = {
+    [key in keyof T]:T[key]
+}
+type RequiredByKeys<T,K extends keyof T> = Merge<{
+    [key in keyof T as key extends K? key:never]-?:T[key]
+}&{
+    [key in keyof T as key extends K? never:key]:T[key]
+}>
+type UserRequiredName = RequiredByKeys<User, 'name'> // { name: string; age?: number; address?: string }
+// 实现一个通用的类型 Mutable<T>，使类型 T 的全部属性可变（非只读）。
+interface Todo {
+  readonly title: string
+  readonly description: string
+   completed: boolean
+}
+type Mutable<T extends Record<any,any>> = {
+    -readonly [key in keyof T]:T[key]
+}
+type MutableTodo = Mutable<Todo> // { title: string; description: string; completed: boolean; }
+
+// OmitByType
+type OmitByType<T extends object, K extends any> = {
+    [key in keyof T as T[key] extends K ?never:key]: T[key]
+}
+type OmitBoolean = OmitByType<{
+  name: string
+  count: number
+  isReadonly: boolean
+  isEnable: boolean
+}, boolean> // { name: string; count: number }
+
+// Object.entries
+interface Model {
+  name: string;
+  age: number;
+  locations: string[] | null;
+}
+type ObjectEntries<T> = {
+  [K in keyof T]-?: [K, T[K] extends undefined ? undefined : Exclude<T[K], undefined>]
+}[keyof T]
+
+type modelEntries = ObjectEntries<Model> // ['name', string] | ['age', number] | ['locations', string[] | null];
+
+// Shift
+type Shift<T extends any[]> = [...T] extends [infer L,...infer R] ?R:[]
+type Result = Shift<[3, 2, 1]> // [2, 1]
+
+// Tuple to Nested Object medium #object 元组到嵌套对象介质
+type TupleToNestedObject<T extends any[], V extends any> = T['length'] extends 0?V:
+    T extends [infer F,...infer Rest]?
+        { [key in F & string]: TupleToNestedObject<Rest, V> }
+    :V
+
+
+type a = TupleToNestedObject<['a'], string> // {a: string}
+type b = TupleToNestedObject<['a', 'b'], number> // {a: {b: number}}
+type c = TupleToNestedObject<[], boolean> // boolean. if the tuple is empty, just return the U type
+
+// 实现类型版本的数组反转 Array.reverse
+type Reverse<T extends any[]> = T['length'] extends 0 ?[]:[...T] extends [infer F,...infer Rest]  ? [...Reverse<Rest>,F]:[]
+type a1 = Reverse<['a', 'b']> // ['b', 'a']
+type b1 = Reverse<['a', 'b', 'c']> // ['c', 'b', 'a']
+
+// Type FlipArguments<T>需要函数类型T，并返回一个新的函数类型，该函数类型的返回类型与T相同，但参数相反。
+// type Reverse<T> = T extends [infer A, ...infer B] ? [...Reverse<B>, A] : []
+type FlipArguments<T> = T extends (...args: infer A) => infer R ? (...args: Reverse<A>) => R : never
+type Flipped = FlipArguments<(arg0: string, arg1: number, arg2: boolean) => void> 
+// (arg0: boolean, arg1: number, arg2: string) => void
 
 ```
 ## 其他
