@@ -5,12 +5,12 @@
 ### css优点
 
 1. 浏览器可以对动画进行优化。
-    - 1、GPU硬件加速（transform、opacity、filter）提高动画性能
+    + 1、GPU硬件加速（transform、opacity、filter）提高动画性能
+    + 2、浏览器使用与 requestAnimationFrame 类似的机制  
 
-    - 2、浏览器使用与 requestAnimationFrame 类似的机制  
-    >①会把每一帧中的所有DOM操作集中起来，在一次重绘或回流中就完成,并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率  
+        >①会把每一帧中的所有DOM操作集中起来，在一次重绘或回流中就完成,并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率
 
-    >②在隐藏或不可见的元素中requestAnimationFrame不会进行重绘或回流  
+        >②在隐藏或不可见的元素中requestAnimationFrame不会进行重绘或回流  
 2. 代码相对简单  
 3. 对于帧速表现不好的低版本浏览器，CSS3可以做到自然降级，而JS则需要撰写额外代码  
 
@@ -31,7 +31,6 @@
 
 1. JavaScript在浏览器的主线程中运行，主线程上的其他任务容易对其造成阻塞，从而导致丢帧  
 2. 代码的复杂度高于CSS动画
-
 
 ## 三、css 动画和 js 动画差异总结
 

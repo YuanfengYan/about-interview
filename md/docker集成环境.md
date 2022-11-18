@@ -1,10 +1,72 @@
-# docker集成环境
+# docker
 
     初步理解：docker就是一个虚拟机可以执行一些镜像实例化，比如nginx，php等环境。比起虚拟机docker更加轻量快速##
 
     介绍参考链接 [Docker和k8s的区别与介绍](https://www.cnblogs.com/misswangxing/p/10669444.html)
 
-## 示例
+## docker 常规命令
+
+容器使用：
+
+- docker inspect 容器名称 ：可以查看Docker 容器的配置和状态信息。
+- docker stop 容器名称： 停止 WEB 应用容器
+- docker pull 镜像名： 获取镜像 例如： docker pull ubuntu
+- docker run -it 镜像名（xxx）： 使用镜像（xxx）启动容器，-it 参数为以命令行模式进入该容器 例如： docker run -it ubuntu /bin/bash
+- docker run [options] IMAGE[:TAG] [COMMAND] [ARG…]
+   - IMAGE是镜像的名字
+   - COMMAND是运行起来的时候要执行什么命令.
+   - ARG表示这条命令运行需要的参数.
+- docker start 已停止的容器id(b750bbbcfd88 )： 启动一个已停止的容器：
+- docker stop <容器 ID>
+- ...
+- docker attach 1e560fca3906 ： 不推荐 
+- docker exec -it 243c32535da7 /bin/bash：推荐 容器启动后会进入后台。此时想要进入容器
+- docker export 容器Id > 容器快照名.tar  ： 这样将导出容器快照到本地文件。
+- docker import <指定 URL 或者某个目录来导>http://example.com/exampleimage.tgz example/imagerepo： 导入容器快照
+- docker rm -f 1e560fca3906 : 删除容器
+
+镜像使用：
+
+- docker rmi hello-world  删除镜像
+- 创建镜像：
+  - 1、从已经创建的容器中更新镜像，并且提交这个镜像
+  - 2、使用 Dockerfile 指令来创建一个新的镜像
+
+- 构建镜像
+  - docker build -t “命名的镜像名” “.”   构建当前目录下的Dockerfile文件，制作一个镜像名为‘xxx’的镜像
+    - t ：指定要创建的目标镜像名
+
+    - . ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径
+
+
+容器连接： 
+
+- -p 标识来指定容器端口绑定到主机端口。
+  - -P :是容器内部端口随机映射到主机的端口。
+  - -p : 是容器内部端口绑定到指定的主机端口。
+
+- docker port "容器名称"  //可以查看端口
+
+Dockerfile:
+
+- FROM- 镜像从那里来
+- MAINTAINER- 镜像维护者信息
+- RUN- 构建镜像执行的命令，每一次RUN都会构建一层
+- CMD- 容器启动的命令，如果有多个则以最后一个为准，也可以为ENTRYPOINT提供参数
+- VOLUME- 定义数据卷，如果没有定义则使用默认
+- USER- 指定后续执行的用户组和用户
+- WORKDIR- 切换当前执行的工作目录
+- HEALTHCHECH- 健康检测指令
+- ARG- 变量属性值，但不在容器内部起作用
+- EXPOSE- 暴露端口
+- ENV- 变量属性值，容器内部也会起作用
+- ADD- 添加文件，如果是压缩文件也解压
+- COPY- 添加文件，以复制的形式
+- ENTRYPOINT- 容器进入时执行的命令
+
+## 示例应用
+
+### 示例一： 搭建关联php的nginx
 
 多个项目统一的目录  ~/workspace
 
@@ -17,10 +79,6 @@
     2、 -v ~/workspace:/www  将主机中当前目录下的workspace挂载到容器的/www
 
     3、--privileged=true  使用该参数，container内的root拥有真正的root权限。privileged启动的容器，可以看到很多host上的设备，并且可以执行mount。 甚至允许你在docker容器中启动docker容器。
-
-移除php容器 aha-php-fpm
-
-    docker rm aha-php-fpm
 
 创建 aha-php-nginx 
 
@@ -69,7 +127,9 @@
                       include fastcgi_params;
               }
       }
-## 小白普及
+
+
+#### 小白普及
 
   nginx与php关系 [参考文档](https://www.cnblogs.com/liyuanhong/articles/11181520.html)
 
@@ -88,71 +148,7 @@
   如何进行关联
 
 
-## docker 常规命令
-
-容器使用：
-
-- docker inspect 容器名称 ：可以查看Docker 容器的配置和状态信息。
-- docker stop 容器名称： 停止 WEB 应用容器
-- docker pull 镜像名： 获取镜像 例如： docker pull ubuntu
-- docker run -it 镜像名（xxx）： 使用镜像（xxx）启动容器，-it 参数为以命令行模式进入该容器 例如： docker run -it ubuntu /bin/bash
-- docker run [options] IMAGE[:TAG] [COMMAND] [ARG…]
-   - IMAGE是镜像的名字
-   - COMMAND是运行起来的时候要执行什么命令.
-   - ARG表示这条命令运行需要的参数.
-- docker start 已停止的容器id(b750bbbcfd88 )： 启动一个已停止的容器：
-- docker stop <容器 ID>
-- ...
-- docker attach 1e560fca3906 ： 不推荐 
-- docker exec -it 243c32535da7 /bin/bash：推荐 容器启动后会进入后台。此时想要进入容器
-- docker export 容器Id > 容器快照名.tar  ： 这样将导出容器快照到本地文件。
-- docker import <指定 URL 或者某个目录来导>http://example.com/exampleimage.tgz example/imagerepo： 导入容器快照
-- docker rm -f 1e560fca3906 : 删除容器
-
-镜像使用：
-
-
-- docker rmi hello-world  删除镜像
-- 创建镜像：
-  - 1、从已经创建的容器中更新镜像，并且提交这个镜像
-  - 2、使用 Dockerfile 指令来创建一个新的镜像
-
-- 构建镜像
-  - docker build -t “命名的镜像名” “.”   构建当前目录下的Dockerfile文件，制作一个镜像名为‘xxx’的镜像
-    - t ：指定要创建的目标镜像名
-
-    - . ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径
-
-
-容器连接： 
-
-- -p 标识来指定容器端口绑定到主机端口。
-  - -P :是容器内部端口随机映射到主机的端口。
-  - -p : 是容器内部端口绑定到指定的主机端口。
-
-- docker port "容器名称"  //可以查看端口
-
-Dockerfile:
-
-- FROM- 镜像从那里来
-- MAINTAINER- 镜像维护者信息
-- RUN- 构建镜像执行的命令，每一次RUN都会构建一层
-- CMD- 容器启动的命令，如果有多个则以最后一个为准，也可以为ENTRYPOINT提供参数
-- VOLUME- 定义数据卷，如果没有定义则使用默认
-- USER- 指定后续执行的用户组和用户
-- WORKDIR- 切换当前执行的工作目录
-- HEALTHCHECH- 健康检测指令
-- ARG- 变量属性值，但不在容器内部起作用
-- EXPOSE- 暴露端口
-- ENV- 变量属性值，容器内部也会起作用
-- ADD- 添加文件，如果是压缩文件也解压
-- COPY- 添加文件，以复制的形式
-- ENTRYPOINT- 容器进入时执行的命令
-
-
-## 示例应用
-
-### 本地环境运行在微信开发者工具中
+### 示例二： 本地环境运行在微信开发者工具中
 
  前景：
 1、常规开发中本地项目带有端口8080或者其他
@@ -213,6 +209,37 @@ Dockerfile:
  ```
 
 
+
+### 示例三：完整的搭建nginx (若直接启动容易将宿主机的空内容覆盖容器内容)
+
+ + [参考文档](https://juejin.cn/post/7126146371198910478)
+
+```javascript
+ docker run -d --name mynginx  -p 80:80 nginx
+  
+ mkdir -p /home/nginx/
+ mkdir -p /home/nginx/logs  
+ mkdir -p /home/nginx/html
+
+docker cp mynginx:/etc/nginx/nginx.conf /home/nginx/nginx.conf
+docker cp mynginx:/etc/nginx/conf.d /home/nginx/
+docker cp mynginx:/usr/share/nginx/html /home/nginx/ #此处就是网站站点目录
+
+docker stop mynginx # mynginx 容器| 容器ID 也可以，只需要前3位数字即可
+ docker rm mynginx
+ docker rm -f mynginx #直接删除正在运行的容器
+
+docker run \
+-p 80:80 -p 443:443 \
+--name mynginx \
+-v /home/nginx/nginx.conf:/etc/nginx/nginx.conf \
+-v /home/nginx/conf.d:/etc/nginx/conf.d \
+-v /home/nginx/logs:/var/log/nginx \
+-v /home/nginx/html:/usr/share/nginx/html \
+-v /home/nginx/ssl:/etc/nginx/ssl \
+-d nginx
+
+```
 
 ## 参考文档
 
