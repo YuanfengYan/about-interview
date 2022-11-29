@@ -1,10 +1,8 @@
 # vue组件通信方式
 
-## 组件通信方式
+## 一、props 和 $emit
 
-### 一、props 和 $emit
-
-### 二、$attrs 和 $listeners
+## 二、$attrs 和 $listeners
 
 Vue 2.4 提供了$attrs 和 $listeners 来实现能够直接让组件A传递消息给组件C。
 
@@ -100,7 +98,7 @@ var app=new Vue({
 
 ```
 
-### 三、中央事件总线 EventBus
+## 三、中央事件总线 EventBus
 
 EventBus 通过新建一个 Vue 事件 bus 对象，然后通过 bus.$emit 触发事件，bus.$on 监听触发的事件。
 >中央事件总线 EventBus 非常简单，就是任意组件和组件之间打交道，没有多余的业务逻辑，只需要在状态变化组件触发一个事件，然后在处理逻辑组件监听该事件就可以。该方法非常适合小型的项目！
@@ -171,7 +169,7 @@ const app = new Vue({
 
 ```
 
-### 四、provide 和 inject
+## 四、provide 和 inject
 
 父组件中通过 provider 来提供属性，然后在子组件中通过 inject 来注入变量。不论子组件有多深，只要调用了 inject 那么就可以注入在 provider 中提供的数据，而不是局限于只能从当前父组件的 prop 属性来获取数据，只要在父组件的生命周期内，子组件都可以调用
 
@@ -220,7 +218,7 @@ const app = new Vue({
 
 ```
 
-### 五、v-model
+## 五、v-model
 
 ```javascript
 // 定义 parent 组件
@@ -272,7 +270,7 @@ const app = new Vue({
 
 ```
 
-### 六、$parent 和 $children
+## 六、$parent 和 $children
 
 >注：$parent 就是父组件的实例对象，而 $children 就是当前实例的直接子组件实例了，不过这个属性值是数组类型的，且并不保证顺序，也不是响应式的。
 
@@ -327,14 +325,14 @@ const app = new Vue({
 
 ```
 
-### 七、$boradcast 和 $dispatch （Vue2.0已废弃）
+## 七、$boradcast 和 $dispatch （Vue2.0已废弃）
 
-### 八、Vuex 状态管理
+## 八、Vuex 状态管理
 
 + [Vuex官网介绍](https://vuex.vuejs.org/zh/)
 + [手写Vuex核心原理，再也不怕面试官问我Vuex原理](https://juejin.im/post/6855474001838342151)
 
-### 九、 $refs进行父子组件通信
+## 九、 $refs进行父子组件通信
 
 ```javascript
 // 父组件

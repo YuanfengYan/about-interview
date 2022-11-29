@@ -28,11 +28,11 @@
         - 勾选 Enable tranaparent HTTP proxying
         - 勾选 Enable SOCKS proxy
 
-![客户端设置](./img/charles7.png)  
+![客户端设置](https://qiniu.kananana.cn/other/charles7.png)  
 
 - 5.2 抓取端口设置  
     - 点击Proxy->SSL Proxy Settings  
     - 勾选Enable SSL Proxying  
     - 点击Add，添加抓取端口（*:443默认为全部端口）  
 
-6. success
+1. success
