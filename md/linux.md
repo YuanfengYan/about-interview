@@ -54,3 +54,10 @@
  /root/myApplication/bin/yt-dlp -f 'bv*[ext=mp4][height<=1080]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b' --print-json --merge-output-format mp4 -o "test1" --restrict-filenames  https://www.youtube.com/watch?v=UWydvG6OAjQ
  
  wget https://github.com/yt-dlp/yt-dlp/releases/download/2022.11.11/yt-dlp
+
+docker cp -a my_centos:/root/download/ /
+ /root/myApplication/bin/yt-dlp -f 'bv*[height=720]+ba' https://www.youtube.com/watch?v=UWydvG6OAjQ -o '%(id)s.%(ext)s'
+
+ /root/myApplication/bin/yt-dlp -f 'bv*[ext=mp4][height=720]+ba[ext=m4a]'  --merge-output-format mp4  https://www.youtube.com/watch?v=UWydvG6OAjQ -o '%(id)s.mp4'
+
+ /root/myApplication/bin/yt-dlp -f 'bv*[ext=mp4][height=720]+ba[ext=m4a]'   https://www.youtube.com/watch?v=UWydvG6OAjQ 
