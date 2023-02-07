@@ -106,6 +106,18 @@ function render(){
 
   + **v-bind 合并行为 v-bind 的绑定顺序会影响渲染结果**
 
+    ```javascript
+      ///vue 2 无论怎样独立的attribute 覆盖 v-bind绑定的attribute属性
+        <div class="A" :v-bind="{class: 'B'}"></div>
+      =><div class="A"></div>
+      //vue3 无论怎样后面的覆盖前面的同名属性
+       <div class="A" :v-bind="{class: 'B'}"></div>
+       =><div class="B"></div>
+       <div :v-bind="{class: 'B'}" class="A" ></div>
+       <div class="A"></div>
+
+    ```
+
   + 新增context.emit，与this.$emit（vue3中只能在方法里使用）作用相同
 
   + **Vue3中的属性绑定**

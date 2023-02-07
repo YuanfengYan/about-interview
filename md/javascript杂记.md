@@ -42,7 +42,7 @@ console.log(name,age,aa)  // 'Bob' 24  123
 ```
 
 
-### 通过 requestAnimationFrame 来实现定时器
+### ✅ 通过 requestAnimationFrame 来实现定时器
 
 ```javascript
 function setInterval(callback, interval) {

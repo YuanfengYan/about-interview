@@ -4,7 +4,7 @@
 
     介绍参考链接 [Docker和k8s的区别与介绍](https://www.cnblogs.com/misswangxing/p/10669444.html)
 
-## docker 常规命令
+## 一、 docker 常规命令
 
 容器使用：
 
@@ -64,7 +64,7 @@ Dockerfile:
 - COPY- 添加文件，以复制的形式
 - ENTRYPOINT- 容器进入时执行的命令
 
-## 示例应用
+## 二、 示例应用
 
 ### 示例一： 搭建关联php的nginx
 
@@ -240,6 +240,82 @@ docker run \
 -d nginx
 
 ```
+
+## 三、镜像的构建及上传
+
+### 1. 利用dockerfile 构建本地镜像
+
+#### 常见的前端项目构建Dockerfile
+
+```dockerfile
+# 基础镜像 一般可以采用node:xx-slim 瘦身版 几十兆
+FROM node:latest 
+COPY package.json /
+RUN npm i --registry=https://registry.npm.taobao.org
+RUN npm run build
+
+FROM nginx:latest
+# 这里的dist/目录是你的项目打包后的文件目录
+COPY ./dist/ /usr/share/nginx/html/
+COPY ./nginx.conf /etc/nginx/conf.d/
+
+EXPOSE 80
+```
+
++ 在版本 Docker 17.05 之后，支持多个FROM,对于多个FROM的理解：
+    - 每一条 FROM 指令都是一个构建阶段，多条 FROM 就是多阶段构建。但生成镜像的只能是最后一个阶段的结果，但是，能够将前置阶段中的文件拷贝到后边的阶段中，这就是多阶段构建的最大意义
+    - 就和上面代码的一样node只需要在构建的时候支持，后续构建镜像不需要node。
+
+#### **如何设置容器自定义启参数**
+
+```dockerfile
+FROM node:16-slim
+COPY ./ /home/prooject
+WORKDIR /home/prooject
+
+RUN npm config set registry https://registry.npm.taobao.org \
+    && npm config set disturl https://npm.taobao.org/dist \
+    && npm config set puppeteer_download_host https://npm.taobao.org/mirrors
+RUN  npm install \
+     && npm run puppet-install
+...
+RUN npm run build
+# CMD ["node", "lib/bundle.esm.js"]
+CMD ["sh" , "start.sh"]
+```
+
+```javascript
+// start.sh
+// 此脚本使用/bin/bash来解释执行  #!是一个特殊的表示符，其后，跟着解释此脚本的shell路径。
+#!/bin/bash
+boot_env=$(env | grep XXXX | cut -d= -f2) //将环境变量中的XXXX 赋值给boot_env
+echo $boot_env
+FROMTYPE=$boot_env && node ./lib/bundle.esm.js //node 启动前设置对应的变量 （这里设置一个FROMTYPE，代码中可以通过process.env.FROMTYPE访问拿到）
+
+```
+
+启动命令 
+
+` docker run --name test -e FROMTYPE=yyy  yanyuanfeng/xxxx:latest`
+
+node中可以访问 process.env.FROMTYPE
+
+
+### 2. 构建命令
+
+`build  --pull --rm -f "Dockerfile" -t yanyuanfeng/xxxx:latest .`
+
++ --pull:它将提取任何基本映像的最新版本，而不是重复使用您已经在本地标记的内容
++ --rm:这意味着,如果构建不成功,则不会删除这些中间容器.这允许调试最后一个中间容器,或将其作为中间映像提交.
++ --force-rm:对比--rm,那些中间的容器将始终是即使在不成功的编译的情况下删除.
++ -f: 指定Dockerfile文件（也可以用远程的）
++ --tag, -t: 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。
+
+### 3. 上传镜像
+
+`docker login`
+`docker push yanyuanfeng/xxxx:latest`
+
 
 ## 参考文档
 
