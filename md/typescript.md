@@ -986,7 +986,7 @@ type Includes<T extends any[], U> = T extends  [infer First, ...infer Rest] ? Is
 type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'xxxx'], 'Dio'> // expected to be `false`
 
 ```
-## ts中级联系
+## ts中级练习
 ```javascript
 // 中等题
 
