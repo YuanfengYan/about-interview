@@ -236,7 +236,7 @@ sudo systemctl restart docker //重启docker
  docker run -d --name mynginx  -p 80:80 nginx
   
  mkdir -p /home/nginx/
- mkdir -p /home/nginx/logs  
+ mkdir -p /home/nginx/logs   
  mkdir -p /home/nginx/html
 
 docker cp mynginx:/etc/nginx/nginx.conf /home/nginx/nginx.conf
