@@ -64,6 +64,24 @@ Dockerfile:
 - COPY- 添加文件，以复制的形式
 - ENTRYPOINT- 容器进入时执行的命令
 
+#### 有时遇到pull 镜像错误 
+
++ <font color='red'>error pulling image configuration: download failed after attempts=6: dial tcp 104.18.124.25:443: i/o timeout
+</font>
+
+可以 Docker 配置文件 /etc/docker/daemon.json
+
+```javascript 
+sudo mkdir -p /etc/docker 
+// 将多行文本写入daemon 如果daemon文件不存在就会创建
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://yxzrazem.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload //重载配置
+sudo systemctl restart docker //重启docker
+```
 ## 二、 示例应用
 
 ### 示例一： 搭建关联php的nginx

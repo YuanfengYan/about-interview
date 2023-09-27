@@ -26,6 +26,19 @@
 
 + chmod +x xxx //xxx文件名
 
+- 以下是一些最常用的模式：
+   - chmod 777 file.txt 表示给文件 file.txt（所有，组，其他人）读、写、执行权限。
+   - chmod 755 file.txt 表示给文件 file.txt（所有）读、写、执行权限；给文件 file.txt（组、其他人）读和执行权限。
+   - chmod 644 file.txt 表示给文件 file.txt（所有）读和写权限；给文件 file.txt（组、其他人）读权限。
+   - chmod 600 file.txt 表示给文件 file.txt（所有）读和写权限；给文件 file.txt（组、其他人）没有任何权限。
+
+### 3. 查看文件 cat
+
+```javascript
+cat [选项] [文件名]
+cat test.txt
+```
+
 ## 其他
 
 ### centos中安装python3
