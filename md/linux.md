@@ -31,6 +31,8 @@
    - chmod 755 file.txt 表示给文件 file.txt（所有）读、写、执行权限；给文件 file.txt（组、其他人）读和执行权限。
    - chmod 644 file.txt 表示给文件 file.txt（所有）读和写权限；给文件 file.txt（组、其他人）读权限。
    - chmod 600 file.txt 表示给文件 file.txt（所有）读和写权限；给文件 file.txt（组、其他人）没有任何权限。
+  
+-  chmod -R a+r web-admin/*  //-R 递归文件夹权限添加
 
 ### 3. 查看文件 cat
 
