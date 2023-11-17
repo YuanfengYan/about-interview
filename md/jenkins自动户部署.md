@@ -7,8 +7,8 @@
 -privileged=true  //让容器具有root权限，便于进入容器
 -p 8080:8080 //指定主机9090端口映射到Jenkins容器的8080端口（Jenkins的web访问端口）
 
-<!-- 在服务器上用上面的版本落下来的版本和本地有区别，不知道什么原因，反正插件总是安装有失败的，最后查看了本地jenkins版本，去docker官网搜索了对应的版本2.425 没有问题  -->
 ```javascript 
+//在服务器上用上面的版本落下来的版本和本地有区别，不知道什么原因，反正插件总是安装有失败的，最后查看了本地jenkins版本，去docker官网搜索了对应的版本2.425 没有问题 
 docker pull jenkins/jenkins:2.425-slim-jdk21-previe
 docker run -d --privileged --name jenkins -p 9999:8080   -p 50000:50000  -v  /home/jenkins_home:/var/jenkins_home  jenkins/jenkins:2.425-slim-jdk21-previe
 ```
@@ -64,6 +64,27 @@ chmod -R 755 dist.tar ##设置权限
 exit;
 ```
 
+6. 将打包后的文件发送到服务器目录
+
+- 使用了插件`Publish Over SSH（具体配置在本文插件介绍中有）
+    
+- Exec command
+(这里可以执行服务器ssh命令)
+```javascript
+cd /home/web-nuxt
+pwd
+tar xvf dist.tar
+chmod -R 755 /home/web-nuxt
+rm -f dist.tar
+cd nuxt2-app/
+source /etc/profile
+source ~/.bash_profile
+yarn install
+pm2 restart nuxt
+
+exit
+```
+
 ## 三、 插件介绍
 
 1. nodejs 安装node环境
@@ -78,6 +99,12 @@ exit;
 3. Git Parameter 拉取git分支列表 选择参数构建=>git参数=>定义分支变量名 如branch=> 在源码仓库中的分支输入`${branch}`
    [参考文档](http://www.mydlq.club/article/45/)
 
+## 四、 相关问题
+
++ 在使用Publish Over SSH执行远程命令时，注意环境变量，因为是在jenkins中连接远程服务器，需要执行`source /etc/profile source ~/.bash_profile`才能使用远程服务器的环境变量（如：pm2\yarn\等等）
+
+
 ## 其他
 
 + [参考链接](https://www.jb51.net/article/211881.htm))
++ [jenkins之SSH Publishers环境变量](https://www.cnblogs.com/SmilingEye/p/11775632.html)

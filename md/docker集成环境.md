@@ -248,7 +248,7 @@ docker stop mynginx # mynginx 容器| 容器ID 也可以，只需要前3位数�
  docker rm -f mynginx #直接删除正在运行的容器
 
 docker run \
--p 80:80 -p 443:443 -p 8081:8081 \
+-p 80:80 -p 443:443 -p 8081:8081 -p 3001:3001\
 --name nginx \
 -v /home/nginx/nginx.conf:/etc/nginx/nginx.conf \
 -v /home/nginx/conf.d:/etc/nginx/conf.d \
