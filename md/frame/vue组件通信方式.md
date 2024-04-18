@@ -2,7 +2,7 @@
 
 ## 一、props 和 $emit
 
-## 二、$attrs 和 $listeners
+## 二、$attrs 和 $listeners (Vue3摒弃了$listeners ,v-on绑定的事件会合并在$attrs中)
 
 Vue 2.4 提供了$attrs 和 $listeners 来实现能够直接让组件A传递消息给组件C。
 
@@ -100,6 +100,8 @@ var app=new Vue({
 
 ## 三、中央事件总线 EventBus
 
+### Vue2
+
 EventBus 通过新建一个 Vue 事件 bus 对象，然后通过 bus.$emit 触发事件，bus.$on 监听触发的事件。
 >中央事件总线 EventBus 非常简单，就是任意组件和组件之间打交道，没有多余的业务逻辑，只需要在状态变化组件触发一个事件，然后在处理逻辑组件监听该事件就可以。该方法非常适合小型的项目！
 
@@ -168,7 +170,52 @@ const app = new Vue({
 });
 
 ```
+### Vue3 使用mitt 
+```javascript
+import mitt from 'mitt'
+const eventBus = mitt()
 
+const defaultOptions = {
+    global: true,
+    inject: true,
+    globalPropertyName: '$eventBus',
+    injectName: '$eventBus'
+}
+
+eventBus.install = install
+export default eventBus
+export const bus = eventBus
+
+function install(app, options) {
+    let opt = {
+        ...defaultOptions,
+        ...options
+    }
+    if(opt.global) {
+        app.config.globalProperties[opt.globalPropertyName] = eventBus;
+    }
+    if(opt.inject) {
+        app.provide(opt.injectName, eventBus)
+    }
+    return eventBus
+}
+
+// 使用
+// main.js
+// import {createApp} from 'vue
+import eventBus from 'vue3-eventbus'
+// const app = createApp(App)
+app.use(eventBus)
+export default {
+    setup() {
+        const bus = inject('$eventBus')
+        bus.emit('foo')
+    }
+}
+// 组件中
+import `inject` from 'vue'
+
+```
 ## 四、provide 和 inject
 
 父组件中通过 provider 来提供属性，然后在子组件中通过 inject 来注入变量。不论子组件有多深，只要调用了 inject 那么就可以注入在 provider 中提供的数据，而不是局限于只能从当前父组件的 prop 属性来获取数据，只要在父组件的生命周期内，子组件都可以调用
