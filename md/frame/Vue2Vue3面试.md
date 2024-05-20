@@ -362,6 +362,23 @@ MyPlugin.install = function (app, options) {
   - 更新前/后：当data变化时，会触发beforeUpdate和updated方法。
   - 销毁前/后：在执行destroy方法后，对data的改变不会再触发周期函数，说明此时vue实例已经解除了事件监听以及和dom的绑定，但是dom结构依然存在。
 
+  + 页面后退时, vue执行的生命周期钩子
+假设从b页面后退到a页面
+依次执行a页面vue组件的beforeCreate, created, beforeMount, 然后是b页面组件的beforeDestroy, destroyed, 最后是执行a页面vue组件的mounted, beforUpdate, updated
+
+  + 页面刷新时, vue执行的生命周期钩子
+依次执行当前页面vue组件的beforeCreate, created, beforeMount, mounted, beforUpdate, updated
+
+  + 页面前进时, vue执行的生命周期钩子
+假设从a页面到b页面
+依次执行b页面vue组件的beforeCreate, created, beforeMount, 然后是a页面组件的beforeDestroy, destroyed, 最后是执行b页面vue组件的mounted, beforUpdate, updated
+
+  + 页面关闭时, vue执行的生命周期钩子
+直接点击浏览器标签关闭页面, 不执行任何生命周期钩子, 如果要在页面关闭前做点事情(例如保存数据),
+可以给页面绑定beforeunload或unload事件, 在事件中编写逻辑
+
+
+
 
 ## 八、性能优化方案？
 
