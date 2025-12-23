@@ -116,11 +116,25 @@ const MyComponent = () => {
 
 ### 5. useImperativeHandle
 
--简介
+- 简介
 当父组件需要直接调用子组件的特定方法时，用 useImperativeHandle 安全地暴露这些方法。
 
+### 6. useMemo
 
-### 6  useSyncExternalStore
+- 简介
+useMemo 用于在函数组件中缓存计算值，避免不必要的重新计算。
+
+- 用法
+
+```javascript
+const memoizedValue = useMemo(() => {
+    // 计算缓存值
+    return calculateValue();
+  }, [dependencies]); // 只有在依赖项发生变化时才重新计算缓存值   
+})
+```
+
+### 7. useSyncExternalStore
 
 - 简介
   当你需要让 React 组件订阅 React 之外的状态时（如 Redux、Zustand、浏览器 API），就用 useSyncExternalStore。
@@ -158,8 +172,34 @@ function App() {
 ```
 
 
-### 7. useEffectEvent
+### 8. useEffectEvent
 
-### 8. useCallback
+### 9. useCallback
 
-### 9. useTransition
+### 10. useTransition
+
+### 11. useDeferredValue
+
+- 简介
+可以让你延迟更新 UI 的某些部分，直到它们的值变得稳定。
+
+- 用法
+  
+```javascript
+const deferredValue = useDeferredValue(value);
+
+// 例子
+
+function App() {
+  const [value, setValue] = useState(0);
+  const deferredValue = useDeferredValue(value);
+  return (
+    <div>
+      <p>Value: {value}</p>
+      <p>Deferred value: {deferredValue}</p>
+      <button onClick={() => setValue(value + 1)}>Increment</button>
+    </div>
+  );
+}
+
+```
